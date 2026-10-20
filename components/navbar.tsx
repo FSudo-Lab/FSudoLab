@@ -1,4 +1,4 @@
- 'use client'
+'use client'
 
 import Image from 'next/image'
 import { useState } from 'react'
@@ -7,8 +7,8 @@ import { ArrowUpRight, Menu, X } from 'lucide-react'
 const logoUrl = '/fsudolablogo.webp'
 const navItems = [
   { label: 'About us', href: '#about-us' },
-  { label: 'Insights', href: '#video' },
-  { label: 'Projects', href: '#partners' },
+  { label: 'Insights', href: '#insights' },
+  { label: 'Partners', href: '#partners' },
 ]
 
 export function Navbar() {

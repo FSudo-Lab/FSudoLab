@@ -233,10 +233,10 @@ const navItems = [
     },
     {
         label: 'Insights',
-        href: '#video'
+        href: '#insights'
     },
     {
-        label: 'Projects',
+        label: 'Partners',
         href: '#partners'
     }
 ];
