@@ -19,8 +19,7 @@ export function Navbar() {
   return (
     <nav className="relative sticky top-0 z-50 flex min-h-[76px] w-full items-center justify-between border-b border-[#e7e7ef] bg-white px-5 py-3 shadow-[0_8px_24px_rgba(31,34,83,0.08)] lg:px-7">
       <a href="#" className="flex shrink-0 items-center gap-2.5" aria-label="FSudoLab home">
-        <Image src={logoUrl} alt="FSudoLab logo" width={47} height={47} className="h-10 w-10 object-contain mix-blend-multiply" priority />
-        <span className="text-sm font-bold tracking-[0.2em] text-[#202456] sm:text-[15px]">FSudoLab</span>
+        <Image src={logoUrl} alt="FSudoLab logo" width={64} height={64} className="h-14 w-14 object-contain mix-blend-multiply" priority />
       </a>
       <div className="hidden items-center gap-12 text-[15px] font-medium text-[#30324e] md:flex">
         {navItems.map((item) => (

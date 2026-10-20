@@ -16,7 +16,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f40$
 ;
 ;
 const metadata = {
-    title: 'FSudoLab — Make bold ideas real',
+    title: 'FSudoLab',
     description: 'FSUDO Lab is a digital innovation studio turning complex challenges into clear, useful, and beautifully engineered experiences.',
     generator: 'v0.app',
     icons: {

@@ -469,18 +469,8 @@ function HeroSection() {
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$3$2e$3_$40$babel$2b$core$40$7$2e$29$2e$7_$40$types$2b$node$40$24$2e$10$2e$4_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
                                 className: "text-5xl font-semibold leading-[1.02] tracking-[-0.05em] text-white sm:text-6xl lg:text-7xl lg:text-[#191b40]",
-                                children: [
-                                    "Make bold ideas ",
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$3$2e$3_$40$babel$2b$core$40$7$2e$29$2e$7_$40$types$2b$node$40$24$2e$10$2e$4_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                        className: "bg-gradient-to-r from-[#7b20c6] via-[#a62bd4] to-[#d33ed2] bg-clip-text text-transparent lg:from-[#202456] lg:via-[#552b91] lg:to-[#8b25cf]",
-                                        children: "real."
-                                    }, void 0, false, {
-                                        fileName: "[project]/components/hero-section.tsx",
-                                        lineNumber: 14,
-                                        columnNumber: 153
-                                    }, this)
-                                ]
-                            }, void 0, true, {
+                                children: "FSudoLab"
+                            }, void 0, false, {
                                 fileName: "[project]/components/hero-section.tsx",
                                 lineNumber: 14,
                                 columnNumber: 11

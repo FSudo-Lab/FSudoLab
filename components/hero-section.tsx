@@ -11,7 +11,7 @@ export function HeroSection() {
         <div className="relative hidden min-h-[430px] lg:block" aria-hidden="true" />
         <div className="relative z-10 max-w-xl p-1 text-white [text-shadow:0_2px_18px_rgba(20,16,64,0.72)] lg:justify-self-end lg:p-0 lg:text-[#11142f] lg:[text-shadow:none]">
           <div className="mb-7 inline-flex rounded-full border border-white/55 bg-white/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] backdrop-blur-lg lg:border-[#e2d9ec] lg:bg-white/75 lg:text-[#6b2a91]">Digital innovation studio</div>
-          <h1 className="text-5xl font-semibold leading-[1.02] tracking-[-0.05em] text-white sm:text-6xl lg:text-7xl lg:text-[#191b40]">Make bold ideas <span className="bg-gradient-to-r from-[#7b20c6] via-[#a62bd4] to-[#d33ed2] bg-clip-text text-transparent lg:from-[#202456] lg:via-[#552b91] lg:to-[#8b25cf]">real.</span></h1>
+          <h1 className="text-5xl font-semibold leading-[1.02] tracking-[-0.05em] text-white sm:text-6xl lg:text-7xl lg:text-[#191b40]">FSudoLab</h1>
           <p className="mt-7 text-sm font-bold uppercase tracking-[0.22em] text-[#f0b7ff] lg:text-[#8b25cf]">Innovation conquers limits.</p>
           <p className="mt-4 max-w-md text-lg leading-8 text-white/90 lg:text-[#34364f]">FSudoLab partners with ambitious teams to turn complex challenges into clear, useful, and beautifully engineered digital experiences.</p>
           <div className="mt-9 flex flex-wrap items-center gap-4">

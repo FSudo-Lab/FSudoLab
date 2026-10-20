@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'FSudoLab — Make bold ideas real',
+  title: 'FSudoLab',
   description: 'FSUDO Lab is a digital innovation studio turning complex challenges into clear, useful, and beautifully engineered experiences.',
   generator: 'v0.app',
   icons: {
