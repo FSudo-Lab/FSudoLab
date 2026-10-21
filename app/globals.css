@@ -165,6 +165,12 @@
   }
 }
 
+.hero-wordmark {
+  font-family: 'Avenir Next', 'Century Gothic', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.075em;
+}
+
 @keyframes marquee-right {
   from { transform: translateX(-50%); }
   to { transform: translateX(0); }
