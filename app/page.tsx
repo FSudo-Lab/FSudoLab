@@ -1,5 +1,6 @@
 import { AboutSection } from '@/components/about-section'
 import { ContactSection } from '@/components/contact-section'
+import { CookieConsent } from '@/components/cookie-consent'
 import { HeroSection } from '@/components/hero-section'
 import { Navbar } from '@/components/navbar'
 import { PartnersSection } from '@/components/partners-section'
@@ -17,6 +18,7 @@ export default function Page() {
       <ProjectsSection />
       <PartnersSection />
       <ContactSection />
+      <CookieConsent />
       <SiteFooter />
     </main>
   )

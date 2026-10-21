@@ -8,7 +8,7 @@ const frameDuration = 1000 / 30
 
 const frameUrl = (frame: number) => {
   const timestamp = ((frame - 1) / 30).toFixed(2)
-  return `/FSudoLabBackground/frame_${String(frame).padStart(4, '0')}_${timestamp}s.png`
+    return `/FSudoLabBackground/frame_${String(frame).padStart(4, '0')}_${timestamp}s.webp`
 }
 
 export function HeroSection() {
