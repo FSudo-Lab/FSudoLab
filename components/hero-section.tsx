@@ -3,36 +3,73 @@
 import { ArrowUpRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-const frameCount = 95
-const frameDuration = 50
+const frameCount = 120
+const frameDuration = 1000 / 30
 
-const frameUrl = (frame: number) => `/FSudoLabBackground/frame_${String(frame).padStart(3, '0')}.webp`
+const frameUrl = (frame: number) => {
+  const timestamp = ((frame - 1) / 30).toFixed(2)
+  return `/FSudoLabBackground/frame_${String(frame).padStart(4, '0')}_${timestamp}s.png`
+}
 
 export function HeroSection() {
   const [frame, setFrame] = useState(1)
+  const [allFramesLoaded, setAllFramesLoaded] = useState(false)
 
   useEffect(() => {
+    let loadedFrames = 0
+    let isActive = true
+    const countedFrames = new Set<number>()
+    const countLoadedFrame = (index: number) => {
+      if (countedFrames.has(index)) return
+      countedFrames.add(index)
+      loadedFrames += 1
+      if (isActive && loadedFrames === frameCount) setAllFramesLoaded(true)
+    }
     const frames = Array.from({ length: frameCount }, (_, index) => {
       const image = new window.Image()
-      image.src = frameUrl(index + 1)
+      image.onload = () => countLoadedFrame(index)
+
       return image
     })
-    let direction = 1
-    const animation = window.setInterval(() => {
-      setFrame((currentFrame) => {
-        if (currentFrame === frameCount) direction = -1
-        if (currentFrame === 1) direction = 1
-        return currentFrame + direction
-      })
-    }, frameDuration)
+
+    frames.forEach((image, index) => {
+      image.src = frameUrl(index + 1)
+      if (image.complete && image.naturalWidth > 0) countLoadedFrame(index)
+    })
 
     return () => {
-      window.clearInterval(animation)
+      isActive = false
       frames.forEach((image) => {
-        image.src = ''
+        image.onload = null
       })
     }
   }, [])
+
+  useEffect(() => {
+    if (!allFramesLoaded) return
+
+    let direction = 1
+    let currentFrame = 1
+    let animation = 0
+
+    const advanceFrame = () => {
+      if (currentFrame === frameCount) direction = -1
+      if (currentFrame === 1) direction = 1
+
+      currentFrame += direction
+      setFrame(currentFrame)
+
+      const distanceFromEdge = Math.min(currentFrame - 1, frameCount - currentFrame)
+      const transitionSlowdown = Math.max(0, 5 - distanceFromEdge) * 14
+      animation = window.setTimeout(advanceFrame, frameDuration + transitionSlowdown)
+    }
+
+    animation = window.setTimeout(advanceFrame, frameDuration)
+
+    return () => {
+      window.clearTimeout(animation)
+    }
+  }, [allFramesLoaded])
 
   return (
     <section id="top" className="relative isolate min-h-screen overflow-hidden border-y border-[#e5e1ec] bg-[#fbfafc] px-6 pb-20 pt-32 lg:px-10 lg:py-28">

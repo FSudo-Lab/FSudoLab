@@ -243,47 +243,85 @@ var _s = __turbopack_context__.k.signature();
 'use client';
 ;
 ;
-const frameCount = 95;
-const frameDuration = 50;
-const frameUrl = (frame)=>`/FSudoLabBackground/frame_${String(frame).padStart(3, '0')}.webp`;
+const frameCount = 120;
+const frameDuration = 1000 / 30;
+const frameUrl = (frame)=>{
+    const timestamp = ((frame - 1) / 30).toFixed(2);
+    return `/FSudoLabBackground/frame_${String(frame).padStart(4, '0')}_${timestamp}s.png`;
+};
 function HeroSection() {
     _s();
     const [frame, setFrame] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$3$2e$3_$40$babel$2b$core$40$7$2e$29$2e$7_$40$types$2b$node$40$24$2e$10$2e$4_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(1);
+    const [allFramesLoaded, setAllFramesLoaded] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$3$2e$3_$40$babel$2b$core$40$7$2e$29$2e$7_$40$types$2b$node$40$24$2e$10$2e$4_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$3$2e$3_$40$babel$2b$core$40$7$2e$29$2e$7_$40$types$2b$node$40$24$2e$10$2e$4_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "HeroSection.useEffect": ()=>{
+            let loadedFrames = 0;
+            let isActive = true;
+            const countedFrames = new Set();
+            const countLoadedFrame = {
+                "HeroSection.useEffect.countLoadedFrame": (index)=>{
+                    if (countedFrames.has(index)) return;
+                    countedFrames.add(index);
+                    loadedFrames += 1;
+                    if (isActive && loadedFrames === frameCount) setAllFramesLoaded(true);
+                }
+            }["HeroSection.useEffect.countLoadedFrame"];
             const frames = Array.from({
                 length: frameCount
             }, {
                 "HeroSection.useEffect.frames": (_, index)=>{
                     const image = new window.Image();
-                    image.src = frameUrl(index + 1);
+                    image.onload = ({
+                        "HeroSection.useEffect.frames": ()=>countLoadedFrame(index)
+                    })["HeroSection.useEffect.frames"];
                     return image;
                 }
             }["HeroSection.useEffect.frames"]);
-            let direction = 1;
-            const animation = window.setInterval({
-                "HeroSection.useEffect.animation": ()=>{
-                    setFrame({
-                        "HeroSection.useEffect.animation": (currentFrame)=>{
-                            if (currentFrame === frameCount) direction = -1;
-                            if (currentFrame === 1) direction = 1;
-                            return currentFrame + direction;
-                        }
-                    }["HeroSection.useEffect.animation"]);
+            frames.forEach({
+                "HeroSection.useEffect": (image, index)=>{
+                    image.src = frameUrl(index + 1);
+                    if (image.complete && image.naturalWidth > 0) countLoadedFrame(index);
                 }
-            }["HeroSection.useEffect.animation"], frameDuration);
+            }["HeroSection.useEffect"]);
             return ({
                 "HeroSection.useEffect": ()=>{
-                    window.clearInterval(animation);
+                    isActive = false;
                     frames.forEach({
                         "HeroSection.useEffect": (image)=>{
-                            image.src = '';
+                            image.onload = null;
                         }
                     }["HeroSection.useEffect"]);
                 }
             })["HeroSection.useEffect"];
         }
     }["HeroSection.useEffect"], []);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$3$2e$3_$40$babel$2b$core$40$7$2e$29$2e$7_$40$types$2b$node$40$24$2e$10$2e$4_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
+        "HeroSection.useEffect": ()=>{
+            if (!allFramesLoaded) return;
+            let direction = 1;
+            let currentFrame = 1;
+            let animation = 0;
+            const advanceFrame = {
+                "HeroSection.useEffect.advanceFrame": ()=>{
+                    if (currentFrame === frameCount) direction = -1;
+                    if (currentFrame === 1) direction = 1;
+                    currentFrame += direction;
+                    setFrame(currentFrame);
+                    const distanceFromEdge = Math.min(currentFrame - 1, frameCount - currentFrame);
+                    const transitionSlowdown = Math.max(0, 5 - distanceFromEdge) * 14;
+                    animation = window.setTimeout(advanceFrame, frameDuration + transitionSlowdown);
+                }
+            }["HeroSection.useEffect.advanceFrame"];
+            animation = window.setTimeout(advanceFrame, frameDuration);
+            return ({
+                "HeroSection.useEffect": ()=>{
+                    window.clearTimeout(animation);
+                }
+            })["HeroSection.useEffect"];
+        }
+    }["HeroSection.useEffect"], [
+        allFramesLoaded
+    ]);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$3$2e$3_$40$babel$2b$core$40$7$2e$29$2e$7_$40$types$2b$node$40$24$2e$10$2e$4_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
         id: "top",
         className: "relative isolate min-h-screen overflow-hidden border-y border-[#e5e1ec] bg-[#fbfafc] px-6 pb-20 pt-32 lg:px-10 lg:py-28",
@@ -294,7 +332,7 @@ function HeroSection() {
                 className: "absolute inset-0 h-full w-full object-cover object-left md:object-center"
             }, void 0, false, {
                 fileName: "[project]/components/hero-section.tsx",
-                lineNumber: 39,
+                lineNumber: 76,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$3$2e$3_$40$babel$2b$core$40$7$2e$29$2e$7_$40$types$2b$node$40$24$2e$10$2e$4_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -305,7 +343,7 @@ function HeroSection() {
                         "aria-hidden": "true"
                     }, void 0, false, {
                         fileName: "[project]/components/hero-section.tsx",
-                        lineNumber: 41,
+                        lineNumber: 78,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$3$2e$3_$40$babel$2b$core$40$7$2e$29$2e$7_$40$types$2b$node$40$24$2e$10$2e$4_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -316,7 +354,7 @@ function HeroSection() {
                                 children: "Digital innovation studio"
                             }, void 0, false, {
                                 fileName: "[project]/components/hero-section.tsx",
-                                lineNumber: 43,
+                                lineNumber: 80,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$3$2e$3_$40$babel$2b$core$40$7$2e$29$2e$7_$40$types$2b$node$40$24$2e$10$2e$4_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -328,13 +366,13 @@ function HeroSection() {
                                         children: "Lab"
                                     }, void 0, false, {
                                         fileName: "[project]/components/hero-section.tsx",
-                                        lineNumber: 44,
+                                        lineNumber: 81,
                                         columnNumber: 123
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/hero-section.tsx",
-                                lineNumber: 44,
+                                lineNumber: 81,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$3$2e$3_$40$babel$2b$core$40$7$2e$29$2e$7_$40$types$2b$node$40$24$2e$10$2e$4_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -342,7 +380,7 @@ function HeroSection() {
                                 children: "Innovation conquers limits."
                             }, void 0, false, {
                                 fileName: "[project]/components/hero-section.tsx",
-                                lineNumber: 45,
+                                lineNumber: 82,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$3$2e$3_$40$babel$2b$core$40$7$2e$29$2e$7_$40$types$2b$node$40$24$2e$10$2e$4_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -350,7 +388,7 @@ function HeroSection() {
                                 children: "FSudoLab partners with ambitious teams to turn complex challenges into clear, useful, and beautifully engineered digital experiences."
                             }, void 0, false, {
                                 fileName: "[project]/components/hero-section.tsx",
-                                lineNumber: 46,
+                                lineNumber: 83,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$3$2e$3_$40$babel$2b$core$40$7$2e$29$2e$7_$40$types$2b$node$40$24$2e$10$2e$4_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -364,18 +402,18 @@ function HeroSection() {
                                             className: "ml-2 inline h-4 w-4"
                                         }, void 0, false, {
                                             fileName: "[project]/components/hero-section.tsx",
-                                            lineNumber: 48,
+                                            lineNumber: 85,
                                             columnNumber: 191
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/components/hero-section.tsx",
-                                    lineNumber: 48,
+                                    lineNumber: 85,
                                     columnNumber: 13
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/components/hero-section.tsx",
-                                lineNumber: 47,
+                                lineNumber: 84,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$3$2e$3_$40$babel$2b$core$40$7$2e$29$2e$7_$40$types$2b$node$40$24$2e$10$2e$4_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -388,14 +426,14 @@ function HeroSection() {
                                                 children: "12+"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/hero-section.tsx",
-                                                lineNumber: 51,
+                                                lineNumber: 88,
                                                 columnNumber: 18
                                             }, this),
                                             " ideas launched"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/hero-section.tsx",
-                                        lineNumber: 51,
+                                        lineNumber: 88,
                                         columnNumber: 13
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f2e$pnpm$2f$next$40$16$2e$3$2e$3_$40$babel$2b$core$40$7$2e$29$2e$7_$40$types$2b$node$40$24$2e$10$2e$4_react$2d$dom$40$19$2e$2$2e$4_react$40$19$2e$2$2e$4_$5f$react$40$19$2e$2$2e$4$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -405,42 +443,42 @@ function HeroSection() {
                                                 children: "4.9"
                                             }, void 0, false, {
                                                 fileName: "[project]/components/hero-section.tsx",
-                                                lineNumber: 52,
+                                                lineNumber: 89,
                                                 columnNumber: 18
                                             }, this),
                                             " partner rating"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/components/hero-section.tsx",
-                                        lineNumber: 52,
+                                        lineNumber: 89,
                                         columnNumber: 13
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/hero-section.tsx",
-                                lineNumber: 50,
+                                lineNumber: 87,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/hero-section.tsx",
-                        lineNumber: 42,
+                        lineNumber: 79,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/hero-section.tsx",
-                lineNumber: 40,
+                lineNumber: 77,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/hero-section.tsx",
-        lineNumber: 38,
+        lineNumber: 75,
         columnNumber: 5
     }, this);
 }
-_s(HeroSection, "Mf3yEnrZNMNQY0v/OqABX18wzuo=");
+_s(HeroSection, "IyABKdMuw0U092xGXKDPL4Tm0y8=");
 _c = HeroSection;
 var _c;
 __turbopack_context__.k.register(_c, "HeroSection");
