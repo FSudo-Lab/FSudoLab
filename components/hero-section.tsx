@@ -59,9 +59,7 @@ export function HeroSection() {
       currentFrame += direction
       setFrame(currentFrame)
 
-      const distanceFromEdge = Math.min(currentFrame - 1, frameCount - currentFrame)
-      const transitionSlowdown = Math.max(0, 5 - distanceFromEdge) * 14
-      animation = window.setTimeout(advanceFrame, frameDuration + transitionSlowdown)
+      animation = window.setTimeout(advanceFrame, frameDuration)
     }
 
     animation = window.setTimeout(advanceFrame, frameDuration)
