@@ -7,6 +7,7 @@ const partners = [
   { label: 'Jentaime', image: '/partners/jentaime_logo.webp' },
   { label: 'SmartFshop', image: '/partners/smartFshop.webp' },
   { label: 'Smart Farming', image: '/partners/smartfarming.webp' },
+  { label: 'Amen-Matt', image: '/partners/Amen-Matt.webp' },
 ]
 
 export function PartnersSection() {
