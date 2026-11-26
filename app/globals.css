@@ -249,3 +249,549 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee-right, .animate-marquee-left, .hero-blob-one, .hero-blob-two, .hero-blob-three { animation-play-state: paused; }
 }
+
+/* ---------- Scrollytelling ---------- */
+
+/* Pinned chapters scrub their text with --p (0 → 1 as you scroll through the chapter). */
+.scrub-word {
+  display: inline;
+  opacity: clamp(0.14, calc((var(--p, 0) * 1.7 * var(--n) - var(--i)) * 1), 1);
+  transition: opacity .15s linear;
+}
+.scrub-late {
+  opacity: clamp(0, calc((var(--p, 0) - 0.55) * 5), 1);
+  transform: translateY(calc((1 - clamp(0, (var(--p, 0) - 0.55) * 5, 1)) * 16px));
+}
+
+/* Chapter rail takes the tone of the chapter behind it; label shows on hover (and always on wide screens). */
+.chapter-progress { top: calc(env(safe-area-inset-top) + 0px); }
+.chapter-rail .rail-label { color: #44465f; }
+.chapter-rail .rail-dot { background: rgba(17, 20, 47, .28); }
+.chapter-rail [aria-current] .rail-dot { background: #a329c8; }
+.chapter-rail[data-tone='dark'] .rail-label { color: rgba(255, 255, 255, .8); }
+.chapter-rail[data-tone='dark'] .rail-dot { background: rgba(255, 255, 255, .35); }
+.chapter-rail[data-tone='dark'] [aria-current] .rail-dot { background: #e782f5; }
+
+/* Where the browser supports scroll-driven animations, reveals are scrubbed with the
+   scroll (they fade in as you scroll in, and back out if you scroll up) instead of
+   playing once. Other browsers keep the play-once reveal. */
+@supports (animation-timeline: view()) {
+  .reveal-ready [data-reveal],
+  .reveal-ready [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: scroll-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 5% cover 28%;
+  }
+}
+@keyframes scroll-reveal {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Scroll-in reveals (only hidden once JS is ready, so content never disappears without it). */
+.reveal-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .7s ease-out, transform .7s cubic-bezier(.2, .7, .2, 1);
+}
+.reveal-ready [data-reveal].is-in { opacity: 1; transform: none; }
+
+/* Space reserved for the fixed navbar (top offset + height + safe-area). */
+:root { --nav-space: calc(env(safe-area-inset-top) + 92px); }
+
+/* Anchor links land below the navbar and stay there. */
+#projects, #insights, #partners { scroll-margin-top: calc(var(--nav-space) + 12px); }
+
+/* ---------- Liquid glass ----------
+   A clear tinted pane with a soft blur, a bright specular rim and an inner glow.
+   Elements with `data-lg-refract` also bend the background at their edges on desktop Chromium
+   (see components/liquid-glass.tsx, which adds `html.lg-refract`). Everyone else gets this look. */
+.lg {
+  --lg-tint: rgba(255, 255, 255, .3);
+  --lg-edge: rgba(255, 255, 255, .34);
+  --lg-blur: 10px;
+  --lg-sat: 160%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .2), rgba(255, 255, 255, .02) 60%), var(--lg-tint);
+  border: 1px solid var(--lg-edge);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .75),
+    inset 0 -1px 0 rgba(255, 255, 255, .16),
+    inset 0 14px 22px -16px rgba(255, 255, 255, .7),
+    inset 0 -10px 20px -14px rgba(255, 255, 255, .28),
+    0 14px 36px -10px rgba(18, 14, 52, .28);
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+}
+/* Specular rim: light catches the top-left and bottom-right edges. */
+.lg::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, .95), rgba(255, 255, 255, .12) 30%, rgba(255, 255, 255, 0) 55%, rgba(255, 255, 255, .55) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+}
+.lg-dark { --lg-tint: rgba(22, 18, 56, .62); --lg-edge: rgba(255, 255, 255, .2); --lg-blur: 18px; }
+html.lg-refract .lg-dark[data-lg-refract] { --lg-blur: 8px; }
+html.lg-refract [data-lg-refract] {
+  --lg-blur: 3px;
+  -webkit-backdrop-filter: var(--lg-refract, blur(0px)) blur(var(--lg-blur)) saturate(var(--lg-sat));
+  backdrop-filter: var(--lg-refract, blur(0px)) blur(var(--lg-blur)) saturate(var(--lg-sat));
+}
+/* While scrolling, the (expensive) edge bending rests; the glass itself stays. */
+html.lg-refract.lg-scrolling [data-lg-refract] {
+  -webkit-backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+  backdrop-filter: blur(var(--lg-blur)) saturate(var(--lg-sat));
+}
+/* Small glass chips inside a glass surface (menu rows, the menu button): no second blur. */
+.lg-chip {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, .05));
+  border: 1px solid rgba(255, 255, 255, .2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 4px 14px -6px rgba(10, 8, 30, .35);
+  transition: background-color .25s ease, border-color .25s ease, transform .25s ease;
+}
+.lg-chip:hover, .lg-chip:focus-visible { background-color: rgba(255, 255, 255, .12); border-color: rgba(255, 255, 255, .34); }
+.lg-chip:active { transform: scale(.98); }
+/* No blur support, or the reader asked for less transparency: a solid pane instead. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .lg { --lg-tint: rgba(251, 250, 252, .94); }
+  .lg-dark { --lg-tint: rgba(23, 25, 61, .96); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .lg { --lg-tint: rgba(251, 250, 252, .96); -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+  .lg-dark { --lg-tint: rgba(23, 25, 61, .97); }
+}
+
+/* Navbar: a liquid-glass pill whose text follows the section underneath it. */
+.site-nav {
+  top: calc(env(safe-area-inset-top) + 1rem);
+  left: max(0.75rem, env(safe-area-inset-left));
+  right: max(0.75rem, env(safe-area-inset-right));
+  --lg-tint: rgba(255, 255, 255, .34);
+  transition: background-color .4s ease, border-color .4s ease;
+}
+@media (min-width: 640px) { .site-nav { left: max(1rem, env(safe-area-inset-left)); right: max(1rem, env(safe-area-inset-right)); } }
+@media (min-width: 1024px) { .site-nav { left: max(1.25rem, env(safe-area-inset-left)); right: max(1.25rem, env(safe-area-inset-right)); } }
+.site-nav .nav-link { color: #3a3c57; }
+.site-nav .nav-link:hover, .site-nav .nav-link:focus-visible { color: #11142f; }
+.site-nav .nav-menu-btn { color: #11142f; border-color: rgba(17, 20, 47, .14); background-color: rgba(255, 255, 255, .35); }
+
+html[data-story-theme='dark'] .site-nav { --lg-tint: rgba(24, 20, 60, .34); --lg-edge: rgba(255, 255, 255, .2); }
+html[data-story-theme='dark'] .site-nav .nav-link,
+html[data-story-theme='dark'] .site-nav .nav-brand { color: rgba(255, 255, 255, .9); }
+html[data-story-theme='dark'] .site-nav .nav-link:hover,
+html[data-story-theme='dark'] .site-nav .nav-link:focus-visible { color: #fff; }
+html[data-story-theme='dark'] .site-nav .nav-menu-btn { color: #fff; border-color: rgba(255, 255, 255, .3); background-color: rgba(255, 255, 255, .08); }
+/* The open menu is always dark glass so its white text reads over anything. */
+.nav-sheet {
+  --lg-tint: rgba(22, 18, 56, .55);
+  top: calc(env(safe-area-inset-top) + 1rem + 76px + .75rem);
+  left: max(0.75rem, env(safe-area-inset-left));
+  right: max(0.75rem, env(safe-area-inset-right));
+  animation: nav-sheet-in .32s cubic-bezier(.2, .9, .3, 1.15) both;
+  transform-origin: top right;
+}
+@media (min-width: 640px) { .nav-sheet { left: max(1rem, env(safe-area-inset-left)); right: max(1rem, env(safe-area-inset-right)); } }
+@keyframes nav-sheet-in { from { opacity: 0; transform: translateY(-8px) scale(.96); } }
+@media (prefers-reduced-motion: reduce) { .nav-sheet { animation: none; } }
+
+/* Keep the blob visually below the navbar: fade the blob layer out under it. */
+.blob-layer {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent calc(var(--nav-space) - 8px), #000 calc(var(--nav-space) + 48px));
+  mask-image: linear-gradient(to bottom, transparent 0, transparent calc(var(--nav-space) - 8px), #000 calc(var(--nav-space) + 48px));
+}
+
+/* Hero scroll cue */
+.scroll-cue-line {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 44px;
+  overflow: hidden;
+  background: currentColor;
+  opacity: .35;
+}
+.scroll-cue-line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #8b25cf;
+  transform: translateY(-100%);
+  animation: scroll-cue 1.8s cubic-bezier(.6, 0, .3, 1) infinite;
+}
+@keyframes scroll-cue {
+  to { transform: translateY(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-ready [data-reveal], .reveal-ready [data-reveal].is-in { opacity: 1; transform: none; transition: none; animation: none; }
+  .scrub-word, .scrub-late { opacity: 1; transform: none; }
+  .scroll-cue-line::after { animation: none; }
+}
+
+/* ---------- Brand intro (components/intro-section.tsx) ---------- */
+/* A full-screen layer over the site while the step-by-step intro plays (the page doesn't move). */
+.intro { position: fixed; inset: 0; z-index: 60; touch-action: none; overscroll-behavior: none; }
+/* Real phones (Chrome on Android especially) start scrolling the page before JavaScript can stop
+   it, and <body> can still scroll when only <html> is locked. So while the intro plays, both are
+   locked and touches on the intro never pan the page: every swipe goes to the intro. */
+html[data-intro='on'], html[data-intro='on'] body { overflow: hidden; overscroll-behavior: none; touch-action: none; }
+.intro-pin { position: absolute; inset: 0; overflow: hidden; background: #0e0a2b; }
+.intro-mark {
+  position: absolute; left: 50%; top: 50%;
+  width: min(36vmin, 270px); aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  will-change: transform, opacity, filter;
+  animation: intro-boot 1.4s cubic-bezier(.2,.8,.2,1) both;
+}
+.intro-mark-img, .intro-mark-shine { position: absolute; inset: 0; }
+.intro-mark-img { background: url('/fsudolablogo.webp') center/contain no-repeat; filter: drop-shadow(0 0 28px rgba(166,76,255,.55)); }
+.intro-mark-shine {
+  -webkit-mask: url('/fsudolablogo.webp') center/contain no-repeat; mask: url('/fsudolablogo.webp') center/contain no-repeat;
+  background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.95) 48%, rgba(255,230,255,.6) 52%, transparent 65%) no-repeat;
+  background-size: 300% 100%; mix-blend-mode: screen;
+  animation: intro-sweep 2.6s cubic-bezier(.5,0,.3,1) infinite;
+}
+.intro-mark-glint {
+  position: absolute; width: 26%; aspect-ratio: 1; right: 8%; top: 22%; opacity: 0;
+  background: radial-gradient(circle, #fff 0 4%, transparent 5%),
+    conic-gradient(from 0deg, transparent 0 22%, rgba(255,255,255,.9) 25%, transparent 28% 47%, rgba(255,255,255,.9) 50%, transparent 53% 72%, rgba(255,255,255,.9) 75%, transparent 78% 97%, rgba(255,255,255,.9) 100%);
+  -webkit-mask: radial-gradient(circle, #000 0 20%, transparent 60%); mask: radial-gradient(circle, #000 0 20%, transparent 60%);
+  animation: intro-twinkle 2.6s ease-in-out infinite;
+}
+.intro-word {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0;
+  font-size: clamp(46px, 11vw, 156px); font-weight: 800; letter-spacing: -.03em; white-space: nowrap; line-height: 1; color: #fff;
+}
+.intro-word > span { display: inline-block; opacity: 0; will-change: transform, opacity; }
+.intro-word .intro-word-shine {
+  position: absolute; inset: 0; color: transparent;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.9) 50%, transparent 60%) no-repeat;
+  background-size: 300% 100%; -webkit-background-clip: text; background-clip: text;
+  animation: intro-sweep 2.2s ease-in-out infinite; pointer-events: none;
+}
+.intro-orb {
+  position: absolute; left: 50%; top: 50%; width: 80vmin; aspect-ratio: 1; border-radius: 50%; opacity: 0; pointer-events: none;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(255,255,255,.95) 0 3%, rgba(214,150,255,.75) 10%, rgba(139,44,245,.35) 28%, transparent 60%);
+}
+.intro-core {
+  /* An SVG blob whose outline is redrawn every frame (blobPath in intro-section.tsx). */
+  position: absolute; left: 50%; top: 50%; opacity: 0; pointer-events: none; overflow: visible; will-change: transform;
+}
+.intro-ring {
+  position: absolute; left: 50%; top: 50%; width: 0; height: 0; border-radius: 50%; opacity: 0; pointer-events: none;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 2px rgba(255, 224, 255, .85), 0 0 46px 14px rgba(196, 71, 240, .65), inset 0 0 46px 14px rgba(196, 71, 240, .55);
+}
+.intro-node {
+  position: absolute; left: 50%; top: 50%; width: 18px; height: 18px; margin: -9px; border-radius: 50%;
+  border: 3px solid #7d52ff; opacity: 0; box-shadow: 0 0 14px #a46bff;
+}
+.intro-hint {
+  position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); text-align: center; width: max-content; max-width: 80vw;
+  font-size: 14px; font-weight: 500; letter-spacing: .01em; line-height: 1.4; color: rgba(255,255,255,.78);
+}
+.intro-hint::after {
+  content: ""; display: block; width: 1px; height: 46px; margin: 10px auto 0;
+  background: linear-gradient(#fff, transparent); animation: intro-drip 1.8s ease-in-out infinite;
+}
+.intro-skip {
+  position: fixed; right: 18px; bottom: 18px; z-index: 55; min-height: 44px; padding: 0 18px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.35); background: rgba(14,10,43,.55); color: #fff; font-size: 14px; font-weight: 600;
+  cursor: pointer; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: opacity .3s;
+}
+.intro-skip:focus-visible { outline: 3px solid #c447f0; outline-offset: 3px; }
+html:not([data-intro='on']) .intro-skip { opacity: 0; pointer-events: none; }
+/* The navbar steps aside while the intro plays. */
+.site-nav { transition: opacity .4s ease, background-color .4s ease, border-color .4s ease; }
+html[data-intro='on'] .site-nav { opacity: 0; pointer-events: none; }
+@keyframes intro-boot { from { opacity: 0; filter: blur(14px) brightness(2); } }
+@keyframes intro-sweep { 0% { background-position: 120% 0; } 60%, 100% { background-position: -60% 0; } }
+@keyframes intro-twinkle { 0%, 40% { opacity: 0; transform: scale(.3) rotate(0); } 55% { opacity: 1; transform: scale(1) rotate(45deg); } 75%, 100% { opacity: 0; transform: scale(.4) rotate(90deg); } }
+@keyframes intro-drip { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+@media (prefers-reduced-motion: reduce) { .intro { display: none; } }
+
+/* Hero artwork: feathered bottom edge, so the moving blob drifts out from under it softly
+   instead of being sliced by a hard line. */
+.hero-frames {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 72%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0, #000 72%, transparent 100%);
+}
+@media (max-width: 1023px) {
+  /* Small screens keep white text on the artwork lower down, so feather only the last bit. */
+  .hero-frames {
+    -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 86%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0, #000 86%, transparent 100%);
+  }
+}
+
+/* ---------- What we offer ---------- */
+.service-orb {
+  background: radial-gradient(circle at 32% 28%, #e9c6f2 0%, #a35bc9 38%, #4b2a7a 100%);
+  border-radius: 46% 54% 58% 42% / 48% 42% 58% 52%;
+  box-shadow: inset -4px -6px 10px rgba(40, 18, 80, .35), 0 6px 16px -6px rgba(97, 40, 160, .5);
+  animation: orb-morph 7s ease-in-out infinite alternate;
+  transition: transform .6s cubic-bezier(.22, 1, .36, 1);
+  will-change: transform;
+}
+.service-card:hover .service-orb { transform: scale(1.18); }
+/* Orbs "breathe" with rotate + scale only (compositor-friendly, no repaint each frame). */
+@keyframes orb-morph {
+  50% { rotate: 9deg; scale: 1.05 0.96; }
+  100% { rotate: -7deg; scale: 0.96 1.04; }
+}
+
+/* ---------- Meet our team (carousel) ---------- */
+.team-stage { --w: min(80vw, 600px); height: calc(var(--w) * .625 + 50px); touch-action: pan-y; }
+@media (min-width: 1024px) { .team-stage { --w: min(46vw, 660px); } }
+.team-card {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: var(--w);
+  margin-left: calc(var(--w) / -2);
+  overflow: hidden;
+  border-radius: 1.4rem;
+  border: 1px solid #ebe4f2;
+  background: #fff;
+  box-shadow: 0 18px 40px -26px rgba(37, 28, 74, .35);
+  cursor: pointer;
+  user-select: none;
+  transform: translateX(calc(var(--off) * var(--w) * .9)) scale(.8);
+  filter: grayscale(1);
+  opacity: .5;
+  transition: transform .75s cubic-bezier(.22, 1, .36, 1), filter .75s ease, opacity .75s ease, box-shadow .75s ease;
+}
+@media (min-width: 1024px) { .team-card { transform: translateX(calc(var(--off) * var(--w) * .78)) scale(.8); } }
+.team-card[data-off='0'] { z-index: 5; }
+.team-card[data-off='-1'], .team-card[data-off='1'] { z-index: 4; }
+.team-card[data-off='-2'], .team-card[data-off='2'] { z-index: 3; opacity: .25; }
+.team-card.is-far { opacity: 0; pointer-events: none; }
+.team-card.is-active {
+  transform: none;
+  filter: none;
+  opacity: 1;
+  cursor: auto;
+  box-shadow: 0 34px 70px -30px rgba(61, 30, 120, .45);
+}
+.team-card:not(.is-active):hover { opacity: .8; filter: grayscale(.6); }
+.team-media { aspect-ratio: 16 / 10; overflow: hidden; background: #ede6f4; }
+.team-placeholder {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(120% 90% at 20% 10%, #c79be0 0%, #8a4fbd 40%, #3b2470 100%);
+}
+.team-blob {
+  position: absolute;
+  width: 62%;
+  aspect-ratio: 1;
+  right: -12%;
+  bottom: -22%;
+  background: radial-gradient(circle at 35% 30%, rgba(255, 220, 255, .55), rgba(170, 100, 210, .2) 60%, transparent 70%);
+  border-radius: 46% 54% 58% 42% / 48% 42% 58% 52%;
+  animation: orb-morph 9s ease-in-out infinite alternate;
+}
+.team-arrow {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 999px;
+  border: 1px solid #e3dbec;
+  background: #fff;
+  color: #11142f;
+  transition: background-color .25s ease, color .25s ease, opacity .25s ease, transform .25s ease;
+}
+.team-arrow:hover:not(:disabled) { background: #11142f; color: #fff; }
+.team-arrow:active:not(:disabled) { transform: scale(.94); }
+.team-arrow:disabled { opacity: .35; cursor: default; }
+.team-stage:focus-visible .team-card.is-active { outline: 2px solid #a329c8; outline-offset: 4px; }
+
+/* ---------- Partners strip ---------- */
+.partner-viewport { scrollbar-width: none; }
+.partner-viewport::-webkit-scrollbar { display: none; }
+.partner-tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 8.5rem;
+  height: 6rem;
+  flex-shrink: 0;
+  border-radius: 1.5rem;
+  /* Bright liquid glass, so every logo reads on the dark section. */
+  --lg-tint: rgba(255, 255, 255, .78);
+  --lg-blur: 12px;
+  filter: grayscale(1);
+  opacity: .32;
+  transform: scale(.94);
+  transition: filter .6s ease, opacity .6s ease, transform .7s cubic-bezier(.22, 1, .36, 1), box-shadow .6s ease;
+}
+@media (min-width: 640px) { .partner-tile { width: 11rem; height: 7.5rem; } }
+.partner-name { color: rgba(255, 255, 255, .26); transition: color .6s ease; }
+.partner-more { opacity: 0; transition: opacity .4s ease; }
+.partner-item.is-active .partner-tile, .partner-item:hover .partner-tile, .partner-item:focus-visible .partner-tile {
+  filter: none;
+  opacity: 1;
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9), 0 0 0 1px rgba(231, 130, 245, .35), 0 24px 60px -18px rgba(214, 91, 224, .65);
+}
+.partner-item.is-active .partner-name, .partner-item:hover .partner-name, .partner-item:focus-visible .partner-name { color: #fff; }
+.partner-item.is-active .partner-more, .partner-item:hover .partner-more, .partner-item:focus-visible .partner-more { opacity: 1; }
+/* Violet glow in the middle of the strip, behind the partner in focus. It grows as you scroll in. */
+.partner-glow {
+  position: absolute;
+  left: 50%;
+  bottom: 18%;
+  width: min(70vw, 780px);
+  aspect-ratio: 2 / 1;
+  transform: translateX(-50%) scale(calc(.7 + var(--pin-p, .5) * .5));
+  background: radial-gradient(closest-side, rgba(181, 61, 214, .42), rgba(110, 50, 200, .18) 55%, transparent 100%);
+  filter: blur(30px);
+  pointer-events: none;
+  transition: transform .3s linear;
+}
+@media (max-width: 1023px) { .partner-glow { bottom: 14%; } }
+.partner-item:focus-visible { outline: 2px solid #e782f5; outline-offset: 6px; border-radius: 1.5rem; }
+.partner-overlay { background: rgba(17, 20, 47, .34); animation: overlay-in .3s ease both; }
+.partner-dialog { --lg-tint: rgba(255, 255, 255, .74); --lg-blur: 20px; animation: dialog-in .45s cubic-bezier(.2, .9, .3, 1.1) both; }
+html.lg-refract .partner-dialog[data-lg-refract] { --lg-blur: 14px; }
+@keyframes overlay-in { from { opacity: 0; } }
+@keyframes dialog-in { from { opacity: 0; transform: translateY(18px) scale(.96); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .team-card, .partner-tile, .partner-name { transition: none; }
+  .service-orb, .team-blob { animation: none; }
+  .partner-overlay, .partner-dialog { animation: none; }
+}
+
+/* ---------- Srut-style pinned strips (What we offer, Partners) ---------- */
+.services-track { --card: min(82vw, 460px); padding-inline: calc(50vw - var(--card) / 2); }
+.services-track .service-slide { width: var(--card); flex-shrink: 0; }
+.service-slide { transition: opacity .6s ease, transform .8s cubic-bezier(.22, 1, .36, 1), filter .6s ease; }
+.services-track .service-slide:not(.is-active) { opacity: .38; transform: scale(.94); filter: saturate(.4); }
+.services-track .service-slide.is-active .service-card { box-shadow: 0 30px 60px -30px rgba(97, 40, 160, .4); border-color: #dccbee; }
+.service-card { transition: box-shadow .6s ease, border-color .6s ease; }
+@media (max-height: 700px) and (max-width: 1023px) { .services-track .service-card p:not(:first-child) { font-size: 14px; } }
+#partners .partner-track { padding-inline: calc(50vw - 4.25rem); } /* phones: name under the logo, so centre the tile */
+@media (min-width: 640px) { #partners .partner-track { padding-inline: calc(50vw - 10rem); } }
+
+/* ---------- Our story ---------- */
+.story-word { opacity: clamp(.14, calc(var(--story-lit, 9999) - var(--i)), 1); transition: opacity .25s linear; }
+.story-float {
+  position: absolute;
+  transform: translate3d(0, calc((.5 - var(--story-p, .5)) * var(--d, 1) * 240px), 0);
+  filter: blur(var(--b, 0px));
+  will-change: transform;
+}
+.story-orb {
+  aspect-ratio: 1;
+  background: radial-gradient(circle at 32% 28%, #f2d9f8 0%, #b57ad6 40%, #5b3592 100%);
+  border-radius: 46% 54% 58% 42% / 48% 42% 58% 52%;
+  opacity: .85;
+  box-shadow: inset -10px -14px 26px rgba(40, 18, 80, .3), 0 24px 50px -24px rgba(97, 40, 160, .5);
+  animation: orb-morph 10s ease-in-out infinite alternate;
+}
+.story-chip {
+  padding: .55rem 1.1rem;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: #3a2a5c;
+  --lg-tint: rgba(255, 255, 255, .5);
+}
+@media (max-width: 639px) { .story-chip { font-size: 11px; padding: .4rem .8rem; } }
+
+/* ---------- Spotlight + footer ---------- */
+.spotlight {
+  opacity: 0;
+  transition: opacity .5s ease;
+  will-change: transform;
+  border-radius: 50%;
+}
+@media (pointer: coarse) { .spotlight { opacity: 1; } }
+.footer-mark {
+  font-size: clamp(4rem, 19vw, 19rem);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .95), rgba(255, 255, 255, .25));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-left: -.04em;
+}
+@media (prefers-reduced-motion: reduce) {
+  .service-slide, .story-word { transition: none; }
+  .story-orb { animation: none; }
+  .story-float { transform: none; }
+}
+
+/* ---------- Testimonials (dark, liquid glass) ---------- */
+.testi-orb {
+  position: absolute;
+  aspect-ratio: 1;
+  background: radial-gradient(circle at 32% 28%, #f0c9fb 0%, #b25bd8 38%, #4a2687 100%);
+  border-radius: 46% 54% 58% 42% / 48% 42% 58% 52%;
+  opacity: .75;
+  filter: blur(2px);
+  animation: orb-morph 10s ease-in-out infinite alternate, testi-drift 14s ease-in-out infinite alternate;
+}
+@keyframes testi-drift { to { translate: 0 -28px; } }
+.testi-card {
+  --lg-tint: rgba(255, 255, 255, .07);
+  --lg-edge: rgba(255, 255, 255, .22);
+  --lg-blur: 22px;
+  text-align: center;
+}
+html.lg-refract .testi-card[data-lg-refract] { --lg-blur: 14px; }
+.testi-slide { opacity: 0; transform: translateY(14px); filter: blur(6px); transition: opacity .7s ease, transform .8s cubic-bezier(.22, 1, .36, 1), filter .7s ease; pointer-events: none; }
+.testi-slide.is-active { opacity: 1; transform: none; filter: none; pointer-events: auto; }
+.testi-chip { position: relative; overflow: hidden; color: rgba(255, 255, 255, .7); }
+.testi-chip.is-active { color: #fff; border-color: rgba(231, 130, 245, .55); background-color: rgba(231, 130, 245, .14); }
+.testi-timer { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: #e782f5; transform-origin: left; animation: testi-timer linear both; }
+@keyframes testi-timer { from { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .testi-orb { animation: none; }
+  .testi-slide { transition: none; }
+  .testi-timer { display: none; }
+}
+
+/* ---------- Selected work: Deliver → project handoff (desktop pin) ---------- */
+.work.is-pinned .work-text { opacity: var(--text, 0); transform: translateY(calc((1 - var(--text, 0)) * 28px)); }
+.work.is-pinned .work-frame { opacity: var(--frame, 0); }
+.work.is-pinned .code-window {
+  border-color: color-mix(in oklab, #c13ad1 calc(var(--edge, 0) * 100%), #30315b);
+  box-shadow: 0 0 calc(var(--edge, 0) * 40px) rgba(193, 58, 209, calc(var(--edge, 0) * .45)), 0 25px 50px -12px rgba(36, 36, 93, .2);
+}
+.work.is-pinned .code-window > div:nth-child(2) { opacity: var(--code, 1); }
+.work.is-pinned .work-shot { opacity: var(--shot, 0); }
+.work-shot img { will-change: transform; }
+#work { scroll-margin-top: 0; }
+
+/* ---------- Dark stages: What we offer + Meet our team (liquid glass cards) ---------- */
+.services-dark .service-card,
+.team-dark .team-frame {
+  --lg-tint: rgba(255, 255, 255, .06);
+  --lg-edge: rgba(255, 255, 255, .16);
+  --lg-blur: 16px;
+}
+.services-dark .services-track .service-slide.is-active .service-card,
+.team-dark .team-slide.is-active .team-frame {
+  border-color: rgba(231, 130, 245, .45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35), 0 0 0 1px rgba(231, 130, 245, .25), 0 30px 70px -28px rgba(181, 61, 214, .6);
+}
+.team-track { --card: min(80vw, 600px); padding-inline: calc(50vw - var(--card) / 2); }
+.team-track .team-slide { width: var(--card); flex-shrink: 0; }
+.team-slide { transition: opacity .7s ease, transform .9s cubic-bezier(.22, 1, .36, 1), filter .7s ease; }
+.team-track .team-slide:not(.is-active) { opacity: .4; transform: scale(.93); filter: grayscale(.85); }
+.team-dark .team-media { aspect-ratio: 16 / 10; overflow: hidden; background: #191b3d; }
+@media (prefers-reduced-motion: reduce) { .team-slide { transition: none; } }
