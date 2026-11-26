@@ -13,7 +13,6 @@ const frameUrl = (frame: number) => {
 }
 
 export function HeroSection() {
-  const [frame, setFrame] = useState(1)
   const [allFramesLoaded, setAllFramesLoaded] = useState(false)
   // The original frame animation plays in the hero. When the moving signature blob is
   // running, it sits exactly behind the animated blob; as you scroll, the frames fade
@@ -82,14 +81,16 @@ export function HeroSection() {
     }
     const frames = Array.from({ length: frameCount }, (_, index) => {
       const image = new window.Image()
-      image.onload = () => countLoadedFrame(index)
-
+      image.decoding = 'async'
+      image.onload = () => {
+        // Decode ahead of time so swapping frames later never stalls a frame.
+        image.decode?.().catch(() => {}).finally(() => countLoadedFrame(index))
+      }
       return image
     })
 
     frames.forEach((image, index) => {
       image.src = frameUrl(index + 1)
-      if (image.complete && image.naturalWidth > 0) countLoadedFrame(index)
     })
 
     return () => {
@@ -112,23 +113,29 @@ export function HeroSection() {
       if (currentFrame === 1) direction = 1
 
       currentFrame += direction
-      // No need to animate once the hero has scrolled away.
-      const top = document.getElementById('top')?.getBoundingClientRect()
-      if (top && top.bottom > 0 && top.top < window.innerHeight) setFrame(currentFrame)
+      // Swap the picture directly (no React re-render of the whole hero 30 times a second),
+      // and only while the hero is on screen and its frames are still showing.
+      const img = imgRef.current
+      if (img && onScreen && img.style.opacity !== '0') img.src = frameUrl(currentFrame)
 
       animation = window.setTimeout(advanceFrame, frameDuration)
     }
 
+    let onScreen = true
+    const hero = document.getElementById('top')
+    const io = new IntersectionObserver(([e]) => { onScreen = !!e?.isIntersecting })
+    if (hero) io.observe(hero)
     animation = window.setTimeout(advanceFrame, frameDuration)
 
     return () => {
       window.clearTimeout(animation)
+      io.disconnect()
     }
   }, [allFramesLoaded])
 
   return (
     <section id="top" data-bg="#f5f3ef" data-theme="light" data-blob-anchor="hero" className={`relative isolate z-[2] min-h-svh overflow-hidden px-6 pb-20 pt-32 transition-colors duration-700 lg:px-10 lg:py-28 ${live ? 'bg-transparent' : 'bg-[#f5f3ef]'}`}>
-      <img ref={imgRef} src={frameUrl(frame)} alt="" aria-hidden="true" className="hero-frames absolute inset-0 h-full w-full object-cover object-left md:object-center" />
+      <img ref={imgRef} src={frameUrl(1)} alt="" aria-hidden="true" className="hero-frames absolute inset-0 h-full w-full object-cover object-left md:object-center" />
       <div className="relative mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[1fr_1.05fr]">
         <div className="relative hidden min-h-[430px] lg:block" aria-hidden="true" />
         <div className={`relative z-10 max-w-xl p-1 lg:justify-self-end lg:p-0 lg:text-[#11142f] lg:[text-shadow:none] text-white [text-shadow:0_2px_18px_rgba(20,16,64,0.72)]`}>

@@ -795,3 +795,14 @@ html.lg-refract .testi-card[data-lg-refract] { --lg-blur: 14px; }
 .team-track .team-slide:not(.is-active) { opacity: .4; transform: scale(.93); filter: grayscale(.85); }
 .team-dark .team-media { aspect-ratio: 16 / 10; overflow: hidden; background: #191b3d; }
 @media (prefers-reduced-motion: reduce) { .team-slide { transition: none; } }
+
+/* Glass cards that sit on a flat navy stage (service cards, team cards, partner tiles) keep their
+   tint, rim and glow but skip the backdrop blur: behind them is a single flat colour, so the blur
+   was invisible yet cost a full blur pass per card on every frame while the strips slide. */
+.services-dark .service-card,
+.team-dark .team-frame,
+.partner-tile {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.services-dark .service-card, .team-dark .team-frame { --lg-tint: rgba(255, 255, 255, .07); }
