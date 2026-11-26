@@ -77,9 +77,13 @@ export function usePinnedTrack(
     update()
     const ro = new ResizeObserver(onResize)
     ro.observe(track)
+    // After a jump link the strip lands in place instead of sliding from where it was.
+    const onJump = () => { shown = -1; req() }
+    window.addEventListener('fs:jump', onJump)
     window.addEventListener('scroll', req, { passive: true })
     window.addEventListener('resize', onResize)
     return () => {
+      window.removeEventListener('fs:jump', onJump)
       cancelAnimationFrame(frame)
       ro.disconnect()
       window.removeEventListener('scroll', req)

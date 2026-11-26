@@ -34,6 +34,13 @@ export function Navbar() {
     return () => window.removeEventListener('keydown', onKey)
   }, [isMenuOpen])
 
+  // Any jump link (footer, hero…) also closes the phone menu.
+  useEffect(() => {
+    const close = () => setIsMenuOpen(false)
+    window.addEventListener('fs:jump', close)
+    return () => window.removeEventListener('fs:jump', close)
+  }, [])
+
   const closeMenu = () => setIsMenuOpen(false)
 
   return (

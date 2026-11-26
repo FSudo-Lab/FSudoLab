@@ -196,6 +196,14 @@ export function SceneStepper() {
     })
     mo.observe(html, { attributes: true, attributeFilter: ['data-intro'] })
 
+    // A jump link (JumpTransition) moves the page itself: drop any glide in progress.
+    const onJump = () => {
+      cancelAnimationFrame(raf)
+      tween = null
+      html.style.scrollBehavior = ''
+      cooldownUntil = performance.now() + 500
+    }
+    window.addEventListener('fs:jump', onJump)
     window.addEventListener('wheel', onWheel, { passive: false })
     window.addEventListener('touchstart', onTouchStart, { passive: true })
     window.addEventListener('touchmove', onTouchMove, { passive: false })
@@ -203,6 +211,7 @@ export function SceneStepper() {
     window.addEventListener('keydown', onKey)
     return () => {
       mo.disconnect()
+      window.removeEventListener('fs:jump', onJump)
       cancelAnimationFrame(raf)
       html.style.scrollBehavior = ''
       window.removeEventListener('wheel', onWheel)

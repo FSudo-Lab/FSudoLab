@@ -6,6 +6,10 @@ import { ANCHORS, type Breakpoint, DEFAULT_POSE, type Pose, resolvePose } from '
 // Measured positions, reused every frame (no layout reads while scrolling). Re-measured only when
 // the layout can have changed: a resize, the page changing size (pinned sections settling, images
 // loading), or once scrolling pauses as a safety net.
+/** Frames left in which the blob should jump straight to its target pose (after a page jump). */
+export const snap = { frames: 0 }
+if (typeof window !== 'undefined') window.addEventListener('fs:jump', () => { invalidate(); snap.frames = 12 })
+
 type Spot = { el: HTMLElement; top: number; height: number }
 let spots: Spot[] | null = null
 let navBottom = -1

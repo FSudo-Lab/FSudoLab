@@ -7,7 +7,7 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Group, Mesh, ShaderMaterial, Vector3, Vector4 } from 'three'
-import { readAnchorTarget } from './anchors'
+import { readAnchorTarget, snap } from './anchors'
 import { DEFAULT_POSE, getBreakpoint, type Pose, TUNING } from './config'
 import { FpsMonitor, lowerTier, type Tier, TIER_SETTINGS } from './quality'
 import { buildIconGeometries } from './icons'
@@ -41,6 +41,7 @@ function readHandoff(H: number): { p: number; frame: DOMRect } | null {
     handWatch = true
     const reset = () => { hand = null }
     window.addEventListener('resize', reset)
+    window.addEventListener('fs:jump', reset)
     new ResizeObserver(reset).observe(document.body)
     let idle = 0
     window.addEventListener('scroll', () => { window.clearTimeout(idle); idle = window.setTimeout(reset, 500) }, { passive: true })
@@ -180,7 +181,9 @@ function Director({ tier, reduced, rig, onLowFps }: { tier: Tier; reduced: boole
     S.frames++
     // Glide toward the pose of the chapter being read, with a soft lag.
     readAnchorTarget(getBreakpoint(W), S.target)
-    const k = !S.ready || reduced ? 1 : damp(TUNING.follow, dt)
+    const snapping = snap.frames > 0
+    if (snapping) snap.frames--
+    const k = !S.ready || reduced || snapping ? 1 : damp(TUNING.follow, dt)
     for (const key of Object.keys(S.cur) as (keyof Pose)[]) S.cur[key] += (S.target[key] - S.cur[key]) * k
     S.ready = true
 

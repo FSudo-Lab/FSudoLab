@@ -824,3 +824,12 @@ html.lg-refract .testi-card[data-lg-refract] { --lg-blur: 8px; }
 .film.is-pinned .film-caption { opacity: var(--cap, 0); transform: translateY(calc((1 - var(--cap, 0)) * 24px)); }
 .film.is-pinned .film-controls { opacity: calc(.4 + .6 * var(--grow, 0)); }
 @media (max-width: 639px) { .film-caption { padding-bottom: 5.5rem; } }
+
+/* Jump links: the violet blob that swallows the screen and opens onto the new section. */
+.jump-veil { position: fixed; inset: 0; z-index: 95; display: none; pointer-events: auto; contain: strict; }
+.jump-label {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 600; letter-spacing: -0.04em;
+  opacity: 0; will-change: opacity, transform; pointer-events: none;
+  text-shadow: 0 10px 40px rgba(196, 71, 240, 0.45);
+}

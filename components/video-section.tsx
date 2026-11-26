@@ -47,11 +47,14 @@ export function VideoSection() {
       if (shown !== target) frame = requestAnimationFrame(update)
     }
     const req = () => { if (!frame) frame = requestAnimationFrame(update) }
+    const onJump = () => { shown = -1; req() }
     update()
+    window.addEventListener('fs:jump', onJump)
     window.addEventListener('scroll', req, { passive: true })
     window.addEventListener('resize', req)
     return () => {
       cancelAnimationFrame(frame)
+      window.removeEventListener('fs:jump', onJump)
       window.removeEventListener('scroll', req)
       window.removeEventListener('resize', req)
     }

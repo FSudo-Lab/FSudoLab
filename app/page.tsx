@@ -18,6 +18,7 @@ import { VideoSection } from '@/components/video-section'
 import { StorySection } from '@/components/story-section'
 import { TestimonialsSection } from '@/components/testimonials-section'
 import { SmoothScroll } from '@/components/story/smooth-scroll'
+import { JumpTransition } from '@/components/jump-transition'
 
 // Story order: intro (logo → name → blob, scroll-scrubbed) → hero (signature blob frames) → spark → method → work → services → people → circle → your turn.
 // The signature blob in <BlobStage /> (styled like the hero blob) follows the reader through
@@ -44,6 +45,7 @@ export default function Page() {
       <ContactSection />
       <CookieConsent />
       <LiquidGlass />
+      <JumpTransition />
       <SiteFooter />
     </main>
   )
