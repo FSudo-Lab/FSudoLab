@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { CodeWindow } from '@/components/code-window'
 import { story } from '@/lib/story-content'
 
@@ -89,7 +89,8 @@ export function ProjectsSection() {
     }
   }, [pin])
 
-  const text = (
+  // Memoised: while the code types (scroll-driven), only the code window re-renders.
+  const text = useMemo(() => (
     <div className={pin ? 'work-text' : ''}>
       <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#a329c8]">{c.chapter}</p>
       <h2 className="mt-5 text-5xl font-semibold leading-[0.98] tracking-[-0.05em] text-[#11142f] sm:text-6xl lg:text-7xl">{c.project}</h2>
@@ -101,7 +102,7 @@ export function ProjectsSection() {
         </a>
       )}
     </div>
-  )
+  ), [c, pin])
 
   const preview = (
     <div data-work-frame className={pin ? 'work-frame' : ''}>

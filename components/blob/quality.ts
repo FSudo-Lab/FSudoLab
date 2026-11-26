@@ -5,8 +5,8 @@
 export type Tier = 'high' | 'medium' | 'low'
 
 export const TIER_SETTINGS: Record<Tier, { segments: number; dpr: [number, number] }> = {
-  high: { segments: 96, dpr: [1, 1.5] }, // 1.5 max: sharper than needed for a soft blob is wasted GPU time
-  medium: { segments: 72, dpr: [1, 1.5] },
+  high: { segments: 96, dpr: [1, 1.25] }, // a soft blob needs little resolution; more is wasted GPU time
+  medium: { segments: 72, dpr: [1, 1.25] },
   low: { segments: 44, dpr: [1, 1] },
 }
 

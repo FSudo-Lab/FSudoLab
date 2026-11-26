@@ -749,10 +749,10 @@ html.lg-refract .partner-dialog[data-lg-refract] { --lg-blur: 14px; }
 .testi-card {
   --lg-tint: rgba(255, 255, 255, .07);
   --lg-edge: rgba(255, 255, 255, .22);
-  --lg-blur: 22px;
+  --lg-blur: 12px; /* the orbs behind it move constantly, so a lighter blur keeps it smooth */
   text-align: center;
 }
-html.lg-refract .testi-card[data-lg-refract] { --lg-blur: 14px; }
+html.lg-refract .testi-card[data-lg-refract] { --lg-blur: 8px; }
 .testi-slide { opacity: 0; transform: translateY(14px); filter: blur(6px); transition: opacity .7s ease, transform .8s cubic-bezier(.22, 1, .36, 1), filter .7s ease; pointer-events: none; }
 .testi-slide.is-active { opacity: 1; transform: none; filter: none; pointer-events: auto; }
 .testi-chip { position: relative; overflow: hidden; color: rgba(255, 255, 255, .7); }

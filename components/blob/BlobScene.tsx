@@ -29,14 +29,53 @@ const band = (a: number, b: number, v: number) => {
  * marked data-handoff="on"), returns its scroll progress 0..1 and the measured screen bounds of the
  * code-window frame; otherwise null. The section uses the same formula for its HTML layers.
  */
+// The section's page position and the frame's on-screen box are measured once and reused
+// (the frame does not move while the section is pinned), so the handoff costs no layout reads
+// per frame. Re-measured on resize / page size changes, or once scrolling pauses.
+let hand: { top: number; height: number; frame: DOMRect | null } | null = null
+let handWatch = false
 function readHandoff(H: number): { p: number; frame: DOMRect } | null {
   const sec = document.getElementById('projects')
   if (!sec || sec.dataset.handoff !== 'on') return null
-  const r = sec.getBoundingClientRect()
-  if (r.top > 2 || r.bottom < H * 0.5) return null
-  const frame = sec.querySelector<HTMLElement>('[data-work-frame]')?.getBoundingClientRect()
-  if (!frame || frame.width < 10) return null
-  return { p: clamp01(-r.top / Math.max(1, r.height - H)), frame }
+  if (!handWatch) {
+    handWatch = true
+    const reset = () => { hand = null }
+    window.addEventListener('resize', reset)
+    new ResizeObserver(reset).observe(document.body)
+    let idle = 0
+    window.addEventListener('scroll', () => { window.clearTimeout(idle); idle = window.setTimeout(reset, 500) }, { passive: true })
+  }
+  if (!hand) {
+    const r = sec.getBoundingClientRect()
+    hand = { top: r.top + window.scrollY, height: r.height, frame: null }
+  }
+  const top = hand.top - window.scrollY
+  if (top > 2 || top + hand.height < H * 0.5) {
+    hand.frame = null
+    return null
+  }
+  if (!hand.frame) {
+    const f = sec.querySelector<HTMLElement>('[data-work-frame]')?.getBoundingClientRect()
+    if (!f || f.width < 10) return null
+    hand.frame = f
+  }
+  return { p: clamp01(-top / Math.max(1, hand.height - H)), frame: hand.frame }
+}
+
+/** Draws the scene only while the blob is visible; skips the GPU work entirely otherwise
+ *  (the hero artwork, and the long stretch from What we offer to Testimonials). */
+function Renderer({ rig }: { rig: Rig }) {
+  const drawn = useRef(false)
+  useFrame((state) => {
+    if (rig.root?.visible) {
+      state.gl.render(state.scene, state.camera)
+      drawn.current = true
+    } else if (drawn.current) {
+      state.gl.clear()
+      drawn.current = false
+    }
+  }, 1)
+  return null
 }
 
 function BlobBody({ rig, segments }: { rig: Rig; segments: number }) {
@@ -314,6 +353,7 @@ export default function BlobScene({ initialTier, lockTier = false, reduced }: { 
     >
       <BlobBody rig={rig} segments={settings.segments} />
       <Director tier={tier} reduced={reduced} rig={rig} onLowFps={() => !lockTier && setTier((t) => lowerTier(t))} />
+      <Renderer rig={rig} />
     </Canvas>
   )
 }
