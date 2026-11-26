@@ -825,11 +825,11 @@ html.lg-refract .testi-card[data-lg-refract] { --lg-blur: 8px; }
 .film.is-pinned .film-controls { opacity: calc(.4 + .6 * var(--grow, 0)); }
 @media (max-width: 639px) { .film-caption { padding-bottom: 5.5rem; } }
 
-/* Jump links: the violet blob that swallows the screen and opens onto the new section. */
-.jump-veil { position: fixed; inset: 0; z-index: 95; display: none; pointer-events: auto; contain: strict; }
-.jump-label {
-  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  color: #fff; font-size: clamp(2rem, 6vw, 4.5rem); font-weight: 600; letter-spacing: -0.04em;
-  opacity: 0; will-change: opacity, transform; pointer-events: none;
-  text-shadow: 0 10px 40px rgba(196, 71, 240, 0.45);
+/* Jump links: a soft violet glow swells from the click, covers the screen, then melts away. */
+.jump-veil { position: fixed; inset: 0; z-index: 95; display: none; pointer-events: auto; overflow: hidden; will-change: opacity; }
+.jump-orb {
+  position: absolute; width: 640px; height: 640px; border-radius: 50%;
+  transform-origin: 50% 50%; will-change: transform;
+  /* Solid core to ~62%, then a long feathered edge: no hard outline for the eye to track. */
+  background: radial-gradient(circle closest-side, #4b2a73 0%, #35205f 30%, #1f1641 62%, rgba(31, 22, 65, 0.6) 78%, rgba(31, 22, 65, 0) 100%);
 }
