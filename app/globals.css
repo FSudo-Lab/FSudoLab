@@ -806,3 +806,21 @@ html.lg-refract .testi-card[data-lg-refract] { --lg-blur: 8px; }
   backdrop-filter: none;
 }
 .services-dark .service-card, .team-dark .team-frame { --lg-tint: rgba(255, 255, 255, .07); }
+
+/* ---------- Team film (its own scene) ---------- */
+.film-frame { width: 100%; aspect-ratio: 16 / 9; border-radius: 1.75rem; }
+.film.is-pinned .film-frame {
+  width: 100vw;
+  height: 100svh;
+  aspect-ratio: auto;
+  /* Grows from a rounded window to full screen — transform only, so it stays smooth. */
+  --s: calc(0.58 + 0.42 * var(--grow, 0));
+  transform: scale(var(--s));
+  border-radius: calc((1 - var(--grow, 0)) * 3rem);
+  will-change: transform;
+}
+.film-shade { background: linear-gradient(to top right, rgba(10, 8, 30, .75), rgba(10, 8, 30, .15) 55%, transparent 75%); }
+.film.is-pinned .film-shade { opacity: calc(.35 + .65 * var(--cap, 0)); }
+.film.is-pinned .film-caption { opacity: var(--cap, 0); transform: translateY(calc((1 - var(--cap, 0)) * 24px)); }
+.film.is-pinned .film-controls { opacity: calc(.4 + .6 * var(--grow, 0)); }
+@media (max-width: 639px) { .film-caption { padding-bottom: 5.5rem; } }

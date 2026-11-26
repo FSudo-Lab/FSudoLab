@@ -1,17 +1,16 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { story } from '@/lib/story-content'
 import { usePinnedTrack } from '@/components/story/use-pinned-track'
 
 // "Meet our team", told the same way as "What we offer": the section holds still and, as you
 // scroll, the cards glide sideways on a dark stage. The card in the middle is lit and in colour,
-// the others wait dimmed. The first card is the team video (it plays only while it is in the
-// middle). Copy and members live in lib/story-content.ts (story.insights).
+// the others wait dimmed.
+// The team film has its own scene just before this one (components/video-section.tsx).
+// Copy and members live in lib/story-content.ts (story.insights).
 
-type Card =
-  | { kind: 'video'; label: string; tag: string; src: string }
-  | { kind: 'member'; name: string; role: string; photo: string }
+type Card = { kind: 'member'; name: string; role: string; photo: string }
 
 function initials(name: string) {
   return name
@@ -24,17 +23,11 @@ function initials(name: string) {
 
 export function TeamSection() {
   const c = story.insights
-  const cards: Card[] = [{ kind: 'video', ...c.video }, ...c.members.map((m) => ({ kind: 'member' as const, ...m }))]
+  const cards: Card[] = c.members.map((m) => ({ kind: 'member' as const, ...m }))
   const sectionRef = useRef<HTMLElement>(null)
   const trackRef = useRef<HTMLOListElement>(null)
-  const videoRef = useRef<HTMLVideoElement>(null)
   const { active, pinned } = usePinnedTrack(sectionRef, trackRef, { pace: 1.35 })
   const n = cards.length
-
-  // The video pauses as soon as it slides out of the middle.
-  useEffect(() => {
-    if (pinned && active !== 0) videoRef.current?.pause()
-  }, [active, pinned])
 
   return (
     <section
@@ -61,24 +54,11 @@ export function TeamSection() {
                 key={i}
                 data-track-item
                 className={`team-slide ${!pinned || i === active ? 'is-active' : ''}`}
-                aria-label={card.kind === 'video' ? card.label : `${card.name}, ${card.role}`}
+                aria-label={`${card.name}, ${card.role}`}
               >
                 <div className="team-frame lg relative overflow-hidden rounded-[1.75rem]">
                   <div className="team-media">
-                    {card.kind === 'video' ? (
-                      <video
-                        ref={videoRef}
-                        playsInline
-                        controls={!pinned || i === active}
-                        tabIndex={!pinned || i === active ? 0 : -1}
-                        controlsList="nodownload noremoteplayback"
-                        disablePictureInPicture
-                        preload="metadata"
-                        className="size-full bg-black object-cover"
-                      >
-                        <source src={card.src} type="video/mp4" />
-                      </video>
-                    ) : card.photo ? (
+                    {card.photo ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={card.photo} alt="" loading="lazy" className="size-full object-cover" />
                     ) : (
@@ -89,10 +69,10 @@ export function TeamSection() {
                     )}
                   </div>
                   <div className="flex items-center justify-between gap-3 px-5 py-4 text-[13px]">
-                    <span className="truncate text-white/60">{card.kind === 'video' ? card.tag : card.role}</span>
+                    <span className="truncate text-white/60">{card.role}</span>
                     <span className="flex min-w-0 items-center gap-2 font-semibold uppercase tracking-[0.08em] text-white">
                       <span aria-hidden className="h-px w-6 shrink-0 bg-white/30" />
-                      <span className="truncate">{card.kind === 'video' ? card.label : card.name}</span>
+                      <span className="truncate">{card.name}</span>
                     </span>
                   </div>
                 </div>

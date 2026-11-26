@@ -75,14 +75,22 @@ export const story = {
       },
     ],
   },
-  // "Meet our team" carousel. The first card is the team video; then one card per member.
+  // The team film: its own full-screen scene right before "Meet our team".
+  film: {
+    chapter: 'The people behind it',
+    title: 'This is FSudoLab.',
+    body: 'A small team that turns rough ideas into products people use.',
+    label: 'The FSudoLab team',
+    src: '/video/fsudolab_team.MP4',
+    bg: '#0f1230',
+  },
+  // "Meet our team": one card per member.
   // To add a photo, put it in /public/team/ and set photo: '/team/name.webp'.
   insights: {
     chapter: 'Chapter 04 — The people behind it',
     title: 'Meet our team',
     body: 'The people turning hunches into shipped products. Keep scrolling to meet them.',
     bg: '#0f1230',
-    video: { src: '/video/fsudolab_team.MP4', label: 'The FSudoLab team', tag: 'Team video' },
     members: [
       { name: 'Team member', role: 'Project manager', photo: '' },
       { name: 'Team member', role: 'Lead developer', photo: '' },

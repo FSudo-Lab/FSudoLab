@@ -14,6 +14,7 @@ import { ChapterRail } from '@/components/story/chapter-rail'
 import { SceneStepper } from '@/components/story/scene-stepper'
 import { ServicesSection } from '@/components/services-section'
 import { TeamSection } from '@/components/team-section'
+import { VideoSection } from '@/components/video-section'
 import { StorySection } from '@/components/story-section'
 import { TestimonialsSection } from '@/components/testimonials-section'
 import { SmoothScroll } from '@/components/story/smooth-scroll'
@@ -35,6 +36,7 @@ export default function Page() {
       <MethodChapter />
       <ProjectsSection />
       <ServicesSection />
+      <VideoSection />
       <TeamSection />
       <StorySection />
       <PartnersSection />
