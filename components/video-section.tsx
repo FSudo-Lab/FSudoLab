@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { story } from '@/lib/story-content'
+import { stableVh } from '@/lib/viewport'
 
 // The team film, given its own scene (like the full-screen chapter films on thefinestpour.com):
 // the section holds still while the video grows from a rounded window in the middle into a
@@ -38,7 +39,7 @@ export function VideoSection() {
     const update = () => {
       frame = 0
       const r = sec.getBoundingClientRect()
-      const span = Math.max(1, r.height - window.innerHeight)
+      const span = Math.max(1, r.height - stableVh())
       const target = clamp01(-r.top / span)
       shown = shown < 0 ? target : shown + (target - shown) * 0.18
       if (Math.abs(target - shown) < 0.0005) shown = target
@@ -106,7 +107,7 @@ export function VideoSection() {
       id="film"
       data-bg={v.bg}
       data-theme="dark"
-      className={`film relative z-[2] ${pinned ? 'is-pinned h-[220vh]' : 'px-6 py-20'}`}
+      className={`film relative z-[2] ${pinned ? 'is-pinned h-[220svh]' : 'px-6 py-20'}`}
     >
       <div className={pinned ? 'sticky top-0 flex h-svh items-center justify-center overflow-hidden' : 'mx-auto max-w-7xl'}>
         <div className="film-frame relative overflow-hidden bg-black">

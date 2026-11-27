@@ -51,17 +51,17 @@ export function MethodChapter() {
         ))}
       </div>
 
-      <div className="sticky top-0 flex h-dvh items-end overflow-hidden px-6 pb-10 pt-28 md:items-center md:pb-0 lg:px-10">
+      <div className="sticky top-0 flex h-svh items-end overflow-hidden px-6 pb-52 pt-28 md:items-center md:pb-0 lg:px-10">
         <div className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:72px_72px]" aria-hidden="true" />
-        <div className="relative mx-auto w-full max-w-7xl">
-          <div className="max-w-xl [text-shadow:0_2px_24px_rgba(10,12,40,0.6)]">
+        <div className="relative mx-auto w-full max-w-7xl text-center md:text-left">
+          <div className="mx-auto max-w-xl [text-shadow:0_2px_24px_rgba(10,12,40,0.6)] md:mx-0">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#e782f5]">{c.chapter}</p>
             <h2 className="mt-5 text-4xl font-semibold leading-[0.98] tracking-[-0.06em] sm:text-5xl lg:text-7xl">
               {c.title} <span className="text-[#d65be0]">{c.accent}</span>
             </h2>
             <p className="mt-5 hidden max-w-lg text-lg leading-8 text-white/65 md:block">{c.body}</p>
 
-            <ol className="mt-8 flex flex-wrap gap-2 md:mt-10 md:flex-nowrap md:flex-col md:gap-0 md:border-l md:border-white/15">
+            <ol className="mt-8 flex flex-wrap justify-center gap-2 md:mt-10 md:flex-nowrap md:flex-col md:justify-start md:gap-0 md:border-l md:border-white/15">
               {c.steps.map((step, i) => {
                 const isActive = i === active
                 return (

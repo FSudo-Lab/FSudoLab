@@ -1,14 +1,14 @@
 'use client'
 
 // Jump links (navbar, phone menu, logo, footer, hero buttons…) don't scroll the whole page past
-// the reader. A soft violet glow swells out of the click and covers the screen, the page jumps to
+// the reader. A soft violet glow swells from the center and covers the screen, the page jumps to
 // the section underneath it, and the glow then melts away onto the new section (~0.85 s).
 // Everything animates with transform + opacity only (GPU-composited, no repaints), so it stays
 // smooth on phones. Reduced motion: the page simply jumps.
 
 import { useEffect, useRef } from 'react'
 
-const COVER = 380 // glow swells from the click until the screen is covered
+const COVER = 380 // glow swells from the center until the screen is covered
 const OPEN = 460 // glow melts away onto the new section
 const ORB = 640 // orb's drawn size in px; it is scaled up (soft gradient, so scaling is invisible)
 
@@ -51,11 +51,12 @@ export function JumpTransition() {
       }
     }
 
-    const play = (id: string, x: number, y: number) => {
+    const play = (id: string) => {
       const veil = veilRef.current, orb = orbRef.current
       if (!veil || !orb) return jump(id)
       busy = true
       const W = window.innerWidth, H = window.innerHeight
+      const x = W / 2, y = H / 2
       // The orb's solid core ends at ~62% of its radius: scale it so that core reaches every corner.
       const far = Math.hypot(Math.max(x, W - x), Math.max(y, H - y))
       const full = (far / 0.62) / (ORB / 2)
@@ -103,10 +104,7 @@ export function JumpTransition() {
       e.preventDefault()
       if (busy) return
       if (reduced.matches) return jump(id)
-      // Keyboard "clicks" have no pointer position: start from the link itself.
-      const r = a.getBoundingClientRect()
-      const pointer = e.detail > 0
-      play(id, pointer ? e.clientX : r.left + r.width / 2, pointer ? e.clientY : r.top + r.height / 2)
+      play(id)
     }
 
     document.addEventListener('click', onClick)

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { story } from '@/lib/story-content'
+import { stableVh } from '@/lib/viewport'
 
 // "Our story": the section holds still while a short paragraph lights up word by word as you
 // scroll, with soft blob shapes and glass words drifting past at different depths (some sharp,
@@ -23,7 +24,7 @@ export function StorySection() {
     let frame = 0
     const update = () => {
       frame = 0
-      const vh = window.innerHeight
+      const vh = stableVh()
       const r = section.getBoundingClientRect()
       const span = Math.max(1, r.height - vh)
       // Starts lighting up as the section arrives, finishes a little before it leaves.
@@ -43,7 +44,7 @@ export function StorySection() {
   }, [still, words.length])
 
   return (
-    <section ref={sectionRef} id="our-story" data-bg={c.bg} data-theme="light" className={`our-story relative z-[2] ${still ? 'py-28' : 'h-[260vh]'}`}>
+    <section ref={sectionRef} id="our-story" data-bg={c.bg} data-theme="light" className={`our-story relative z-[2] ${still ? 'py-28' : 'h-[260svh]'}`}>
       <div className={`${still ? '' : 'sticky top-0 h-svh'} flex items-center justify-center overflow-hidden px-6`}>
         {/* Drifting shapes: --d is depth (how fast it drifts), --b how out of focus it is. */}
         <div aria-hidden className="pointer-events-none absolute inset-0">

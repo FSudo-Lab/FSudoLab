@@ -13,6 +13,7 @@
 // while the intro is playing.
 
 import { useEffect } from 'react'
+import { stableVh } from '@/lib/viewport'
 
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v))
 const inOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
@@ -35,7 +36,7 @@ export function SceneStepper() {
       const el = document.getElementById('projects')
       if (!el || el.dataset.handoff !== 'on') return null
       const top = el.getBoundingClientRect().top + window.scrollY
-      const span = Math.max(0, el.offsetHeight - window.innerHeight)
+      const span = Math.max(0, el.offsetHeight - stableVh())
       return [Math.round(top + span)]
     }
 
@@ -48,7 +49,7 @@ export function SceneStepper() {
     }
 
     const stops = (): number[] => {
-      const vh = window.innerHeight
+      const vh = stableVh()
       const out: number[] = []
       const hero = document.getElementById('top')
       if (hero && hero.offsetParent !== null) out.push(Math.max(0, Math.round(topOf(hero))))
@@ -177,6 +178,8 @@ export function SceneStepper() {
       if (dy > 35) move(1)
       else if (dy < -35) move(-1)
     }
+    // A cancelled touch (system gesture, incoming call, palm) must not leave a stale swipe behind.
+    const onTouchCancel = () => { touchY = null; touchFree = false }
     const onKey = (e: KeyboardEvent) => {
       if (!active() || inScrollable(e.target) || (e.target as HTMLElement)?.isContentEditable) return
       const down = e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey)
@@ -203,14 +206,24 @@ export function SceneStepper() {
       html.style.scrollBehavior = ''
       cooldownUntil = performance.now() + 500
     }
+    // Drop a glide if a width change moves the scene stops; ignore mobile toolbar height changes.
+    let lastW = window.innerWidth
+    const onResize = () => {
+      if (window.innerWidth === lastW) return
+      lastW = window.innerWidth
+      if (tween) onJump()
+    }
+    window.addEventListener('resize', onResize)
     window.addEventListener('fs:jump', onJump)
     window.addEventListener('wheel', onWheel, { passive: false })
     window.addEventListener('touchstart', onTouchStart, { passive: true })
     window.addEventListener('touchmove', onTouchMove, { passive: false })
     window.addEventListener('touchend', onTouchEnd)
+    window.addEventListener('touchcancel', onTouchCancel)
     window.addEventListener('keydown', onKey)
     return () => {
       mo.disconnect()
+      window.removeEventListener('resize', onResize)
       window.removeEventListener('fs:jump', onJump)
       cancelAnimationFrame(raf)
       html.style.scrollBehavior = ''
@@ -218,6 +231,7 @@ export function SceneStepper() {
       window.removeEventListener('touchstart', onTouchStart)
       window.removeEventListener('touchmove', onTouchMove)
       window.removeEventListener('touchend', onTouchEnd)
+      window.removeEventListener('touchcancel', onTouchCancel)
       window.removeEventListener('keydown', onKey)
     }
   }, [])

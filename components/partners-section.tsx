@@ -20,7 +20,7 @@ export function PartnersSection() {
   const { active, pinned } = usePinnedTrack(sectionRef, trackRef, { pace: 1.1, itemSelector: '[data-partner]' })
 
   return (
-    <section ref={sectionRef} id="partners" data-bg={c.bg} data-theme="dark" className={`partners-dark relative z-[2] ${pinned ? 'h-[260vh]' : 'py-24'}`}>
+    <section ref={sectionRef} id="partners" data-bg={c.bg} data-theme="dark" className={`partners-dark relative z-[2] ${pinned ? 'h-[260svh]' : 'py-24'}`}>
       <div className={pinned ? 'sticky top-0 flex h-svh flex-col justify-center overflow-hidden pt-[calc(env(safe-area-inset-top)+6rem)] pb-10' : ''}>
         <div className="mx-auto mb-10 w-full max-w-7xl px-6 lg:mb-16 lg:px-10">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#e782f5]">{c.chapter}</p>
@@ -42,8 +42,8 @@ export function PartnersSection() {
                 aria-label={`About ${p.name}`}
                 className={`partner-item group flex shrink-0 snap-center flex-col items-center gap-3 text-center sm:flex-row sm:gap-7 sm:text-left ${i === active ? 'is-active' : ''}`}
               >
-                <span className="partner-tile lg">
-                  <Image src={p.logo} alt="" width={190} height={96} className="h-12 w-auto max-w-[78%] object-contain sm:h-14" />
+                <span className="partner-tile">
+                  <Image src={p.logo} alt="" width={190} height={96} className={`partner-logo h-12 w-auto max-w-[78%] object-contain sm:h-14 ${p.name === 'CWM' ? 'partner-logo-light' : ''}`} />
                 </span>
                 <span className="flex flex-col items-center sm:items-start">
                   <span className="partner-name text-2xl font-medium tracking-[-0.03em] sm:text-3xl lg:text-4xl">{p.name}</span>
@@ -92,7 +92,7 @@ function PartnerDialog({ partner, onClose }: { partner: Partner; onClose: () => 
         <button ref={closeRef} type="button" onClick={onClose} aria-label="Close" className="lg-chip absolute right-4 top-4 grid size-10 place-items-center rounded-full text-[#11142f]">
           <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 6l12 12M18 6 6 18" /></svg>
         </button>
-        <div className="grid h-24 w-36 place-items-center rounded-2xl bg-white shadow-[0_8px_24px_-12px_rgba(37,28,74,0.3)]">
+        <div className="grid h-24 w-36 place-items-center">
           <Image src={partner.logo} alt={`${partner.name} logo`} width={190} height={96} className="h-14 w-auto max-w-[80%] object-contain" />
         </div>
         <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#a329c8]">{partner.kind}</p>

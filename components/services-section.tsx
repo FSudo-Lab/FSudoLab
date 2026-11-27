@@ -15,7 +15,7 @@ export function ServicesSection() {
   const n = c.items.length
 
   return (
-    <section ref={sectionRef} id="services" data-bg={c.bg} data-theme="dark" className={`services services-dark relative z-[2] ${pinned ? 'h-[320vh]' : 'py-24'}`}>
+    <section ref={sectionRef} id="services" data-bg={c.bg} data-theme="dark" className={`services services-dark relative z-[2] ${pinned ? 'h-[320svh]' : 'py-24'}`}>
       <div className={pinned ? 'sticky top-0 flex h-svh flex-col justify-center overflow-hidden pt-[calc(env(safe-area-inset-top)+6rem)] pb-8' : ''}>
         <div className="mx-auto w-full max-w-7xl px-6 lg:px-10">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#e782f5]">{c.chapter}</p>

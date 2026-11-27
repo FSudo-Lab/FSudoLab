@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { stableVh } from '@/lib/viewport'
 
 // Slow, eased scrolling for the free part of the page (from "Selected work" down), the way
 // thefinestpour.com (Srut) feels: each wheel / trackpad movement sets a target and the page
@@ -19,7 +20,7 @@ export function SmoothScroll() {
       const el = document.getElementById('projects')
       if (!el) return 0
       // While Selected work's handoff is pinned, its beats glide (SceneStepper); free scroll starts after.
-      if (el.dataset.handoff === 'on') return Math.round(el.getBoundingClientRect().top + window.scrollY + Math.max(0, el.offsetHeight - window.innerHeight))
+      if (el.dataset.handoff === 'on') return Math.round(el.getBoundingClientRect().top + window.scrollY + Math.max(0, el.offsetHeight - stableVh()))
       const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0
       return Math.round(el.getBoundingClientRect().top + window.scrollY - margin)
     }

@@ -67,17 +67,17 @@ export const ANCHORS: Record<string, Anchor> = {
   'method-0': {
     lg: { x: 0.45, y: -0.02, s: 0.4, d: 0.3, f: 0.7, v: 0.45, h: 0.25, m1: 1 },
     md: { x: 0.55, y: 0.6, s: 0.26 },
-    sm: { x: 0, y: 0.5, s: 0.32, o: 0.95 },
+    sm: { x: 0, y: 0.5, s: 0.42, o: 0.95 },
   },
   'method-1': {
     lg: { x: 0.45, y: -0.02, s: 0.4, d: 0.3, f: 0.7, v: 0.35, h: 0.4, m2: 1 },
     md: { x: 0.55, y: 0.6, s: 0.26 },
-    sm: { x: 0, y: 0.5, s: 0.32, o: 0.95 },
+    sm: { x: 0, y: 0.5, s: 0.42, o: 0.95 },
   },
   'method-2': {
     lg: { x: 0.45, y: -0.02, s: 0.42, d: 0.3, f: 0.7, v: 0.35, h: 0.55, m3: 1 },
     md: { x: 0.55, y: 0.6, s: 0.28 },
-    sm: { x: 0, y: 0.5, s: 0.34, o: 0.95 },
+    sm: { x: 0, y: 0.5, s: 0.44, o: 0.95 },
   },
   // After Deliver the blob teleports away: it beams out right where it was (same pose as
   // method-2, b: 1), stays away through Selected work, Insights and Partners, and beams back in
@@ -85,7 +85,7 @@ export const ANCHORS: Record<string, Anchor> = {
   work: {
     lg: { x: 0.45, y: -0.02, s: 0.42, d: 0.3, f: 0.7, v: 0.35, h: 0.55, m3: 1, b: 1 },
     md: { x: 0.55, y: 0.6, s: 0.28 },
-    sm: { x: 0, y: 0.5, s: 0.34, o: 0.95 },
+    sm: { x: 0, y: 0.5, s: 0.44, o: 0.95 },
   },
   insights: {
     lg: { x: 0, y: -0.02, s: 0.3, d: 0.44, f: 0.55, v: 0.3, h: 0.45, b: 1 },
@@ -101,8 +101,8 @@ export const ANCHORS: Record<string, Anchor> = {
   // Contact: the blob cycles through icons every few seconds (question mark → email → send → check),
   // see ICON_SECONDS in BlobScene.tsx. i = how much it is an icon (0 = blob, 1 = icon).
   contact: {
-    lg: { x: 0, y: -0.02, s: 0.66, d: 0.44, f: 0.55, v: 0.3, h: 0.45, i: 1 },
-    sm: { s: 0.5, y: -0.5 }, // phones: below the email button, clear of the headline
+    lg: { x: 0, ey: 0.5, s: 0.66, d: 0.44, f: 0.55, v: 0.3, h: 0.45, i: 1 },
+    sm: { s: 0.5, ey: 0.5 },
     xl: { s: 0.6 },
   },
 }

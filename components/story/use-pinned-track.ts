@@ -1,6 +1,7 @@
 'use client'
 
 import { type RefObject, useEffect, useState } from 'react'
+import { stableVh } from '@/lib/viewport'
 
 // Srut-style pinned strip: the section is made tall, its inner frame sticks to the screen, and
 // scrolling down slides `track` sideways. The item nearest the middle of the screen is "active".
@@ -42,7 +43,7 @@ export function usePinnedTrack(
     let centres: number[] = []
     let viewW = 0
     const measure = () => {
-      const vh = window.innerHeight
+      const vh = stableVh()
       viewW = track.parentElement!.clientWidth
       travel = Math.max(0, track.scrollWidth - viewW)
       section.style.height = `${Math.round(vh + travel * pace)}px`
@@ -50,7 +51,7 @@ export function usePinnedTrack(
     }
     const update = () => {
       frame = 0
-      const vh = window.innerHeight
+      const vh = stableVh()
       const r = section.getBoundingClientRect()
       const span = Math.max(1, r.height - vh)
       const target = Math.min(1, Math.max(0, -r.top / span))

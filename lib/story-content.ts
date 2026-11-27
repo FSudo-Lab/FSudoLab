@@ -117,7 +117,7 @@ export const story = {
       { name: 'CWM', logo: '/partners/CWM.webp', kind: 'Collaboration', about: '', together: '', link: '' },
       { name: 'Genzslangs', logo: '/partners/genzslangs.webp', kind: 'Collaboration', about: '', together: '', link: '' },
       { name: 'JuanT', logo: '/partners/JuanT.webp', kind: 'Collaboration', about: '', together: '', link: '' },
-      { name: 'Jentaime', logo: '/partners/jentaime_logo.webp', kind: 'Collaboration', about: '', together: '', link: '' },
+      { name: 'Jentaime', logo: '/partners/jentaime_logo_transparent.webp', kind: 'Collaboration', about: '', together: '', link: '' },
       { name: 'SmartFshop', logo: '/partners/smartFshop.webp', kind: 'Collaboration', about: '', together: '', link: '' },
       { name: 'Smart Farming', logo: '/partners/smartfarming.webp', kind: 'Collaboration', about: '', together: '', link: '' },
       { name: 'Amen-Matt', logo: '/partners/Amen-Matt.webp', kind: 'Collaboration', about: '', together: '', link: '' },

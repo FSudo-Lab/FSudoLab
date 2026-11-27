@@ -9,7 +9,7 @@ const links = [
   { label: 'Contact us', href: '#contact' },
 ]
 
-// Srut-style ending: a row of links, a huge wordmark, and a soft light that follows the mouse.
+// Srut-style ending: a row of links and studio details with a soft light that follows the mouse.
 export function SiteFooter() {
   return (
     <footer className="site-footer relative z-[2] overflow-hidden bg-[#17193d] px-6 pt-10 pb-6 text-white lg:px-10">
@@ -20,7 +20,6 @@ export function SiteFooter() {
         ))}
         <a href={`mailto:${story.contact.email}`} className="transition-colors hover:text-white">{story.contact.email}</a>
       </nav>
-      <p aria-hidden className="footer-mark relative mt-10 select-none font-semibold leading-[0.8] tracking-[-0.07em] sm:mt-16">FSudoLab</p>
       <div className="relative mt-6 flex flex-col justify-between gap-2 text-xs text-white/45 sm:flex-row">
         <span>© 2026 FSudoLab. Built for what&apos;s next.</span>
         <span>Strategy · Design · Technology</span>

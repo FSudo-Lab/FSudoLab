@@ -6,6 +6,7 @@
 // Runs in requestAnimationFrame and never re-renders React.
 
 import { type RefObject, useEffect } from 'react'
+import { stableVh } from '@/lib/viewport'
 
 export function useScrollProgress(ref: RefObject<HTMLElement | null>) {
   useEffect(() => {
@@ -15,7 +16,7 @@ export function useScrollProgress(ref: RefObject<HTMLElement | null>) {
     const update = () => {
       frame = 0
       const r = el.getBoundingClientRect()
-      const travel = Math.max(1, r.height - window.innerHeight)
+      const travel = Math.max(1, r.height - stableVh())
       const p = Math.min(1, Math.max(0, -r.top / travel))
       el.style.setProperty('--p', p.toFixed(4))
     }

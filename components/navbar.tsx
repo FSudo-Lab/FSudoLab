@@ -46,7 +46,7 @@ export function Navbar() {
   return (
     <>
     <nav aria-label="Main" data-lg-refract className="site-nav lg fixed z-50 flex min-h-[76px] items-center justify-between rounded-full px-4 py-2.5 sm:px-6 lg:px-8">
-      <a href="#top" className="flex shrink-0 items-center gap-2.5" aria-label="FSudoLab home">
+      <a href="#top" className="nav-logo flex shrink-0 items-center gap-2.5" aria-label="FSudoLab home">
         <Image src={logoUrl} alt="FSudoLab logo" width={64} height={64} className={`h-12 w-12 object-contain transition-[filter,transform] duration-500 ${hasPassedHero ? '' : 'brightness-0 drop-shadow-[0_0_1px_rgba(255,255,255,0.95)]'}`} priority />
         <span className={`nav-brand hidden origin-left text-lg font-semibold tracking-[-0.03em] text-[#11142f] transition-all duration-500 sm:block ${hasPassedHero ? 'translate-x-0 opacity-100' : '-translate-x-5 opacity-0'}`}>FSudoLab</span>
       </a>

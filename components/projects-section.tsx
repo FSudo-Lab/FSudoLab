@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { CodeWindow } from '@/components/code-window'
 import { story } from '@/lib/story-content'
+import { stableVh } from '@/lib/viewport'
 
 // Selected work — the signature moment. On desktop the section holds still for ~1.2 viewports of
 // scroll and plays ONE continuous, reversible timeline (p = 0..1):
@@ -57,7 +58,7 @@ export function ProjectsSection() {
     let lastShot: boolean | null = null
     const update = () => {
       frame = 0
-      const vh = window.innerHeight
+      const vh = stableVh()
       const r = sec.getBoundingClientRect()
       const p = clamp01(-r.top / Math.max(1, r.height - vh))
       const st = sec.style
@@ -128,7 +129,7 @@ export function ProjectsSection() {
       data-bg-end={c.bg}
       data-theme="light"
       data-handoff={pin ? 'on' : 'off'}
-      className={`work relative z-[2] ${pin ? 'is-pinned h-[220vh]' : 'px-6 py-24'}`}
+      className={`work relative z-[2] ${pin ? 'is-pinned h-[220svh]' : 'px-6 py-24'}`}
     >
       {pin ? (
         <div className="sticky top-0 h-svh overflow-hidden">

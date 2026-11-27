@@ -36,7 +36,7 @@ export function TeamSection() {
       data-bg={c.bg}
       data-theme="dark"
       data-blob-anchor="insights"
-      className={`team-dark relative z-[2] ${pinned ? 'h-[360vh]' : 'py-24'}`}
+      className={`team-dark relative z-[2] ${pinned ? 'h-[360svh]' : 'py-24'}`}
     >
       <div className={pinned ? 'sticky top-0 flex h-svh flex-col justify-center overflow-hidden pt-[calc(env(safe-area-inset-top)+6rem)] pb-8' : ''}>
         <div className="mx-auto w-full max-w-7xl px-6 lg:px-10">

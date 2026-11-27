@@ -29,7 +29,7 @@ export function SparkChapter() {
         <div data-blob-anchor="spark-1" className="h-[110svh]" />
       </div>
 
-      <div className="sticky top-0 flex h-dvh items-end px-6 pb-20 pt-28 md:items-center md:pb-0 lg:px-10">
+      <div className="sticky top-0 flex h-svh items-end px-6 pb-20 pt-28 md:items-center md:pb-0 lg:px-10">
         <div className="mx-auto w-full max-w-7xl">
           <div className="max-w-2xl [text-shadow:0_2px_24px_rgba(10,12,40,0.6)]">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#e782f5]">{c.chapter}</p>
