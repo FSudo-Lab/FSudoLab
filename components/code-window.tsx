@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 
 const snippets = [
   ['const vision = await shape({', '  clarity: true,', '  energy: "high",', '})'],
@@ -9,12 +9,27 @@ const snippets = [
   ['export async function build() {', '  const signal = await discover()', '  return deliver(signal)', '}'],
 ]
 
-export function CodeWindow() {
-  const [snippetIndex, setSnippetIndex] = useState(0)
-  const [visibleChars, setVisibleChars] = useState(0)
+type CodeWindowProps = {
+  /** Scroll-driven mode (Selected work handoff): 0..1 of the last snippet is typed. Omit for the looping typewriter. */
+  reveal?: number
+  /** Title-bar label, e.g. the project's address once the screenshot shows. */
+  label?: string
+  /** Size / extra classes for the frame (default: the original 360px-tall window). */
+  className?: string
+  /** Layers drawn inside the frame, under the title bar (e.g. the project screenshot). */
+  children?: ReactNode
+}
+
+export function CodeWindow({ reveal, label = 'fsudolab / studio.ts', className = 'h-[360px]', children }: CodeWindowProps = {}) {
+  const scrubbed = reveal !== undefined
+  const [snippetIndex, setSnippetIndex] = useState(scrubbed ? snippets.length - 1 : 0)
+  const [typedChars, setTypedChars] = useState(0)
   const fullText = snippets[snippetIndex].join('\n')
+  const visibleChars = scrubbed ? Math.round(fullText.length * Math.min(1, Math.max(0, reveal))) : typedChars
+  const setVisibleChars = setTypedChars
 
   useEffect(() => {
+    if (scrubbed) return
     setVisibleChars(0)
     const typingTimer = window.setInterval(() => {
       setVisibleChars((current) => {
@@ -30,15 +45,15 @@ export function CodeWindow() {
       window.clearInterval(typingTimer)
       window.clearTimeout(reset)
     }
-  }, [fullText])
+  }, [fullText, scrubbed])
 
   return (
-    <div className="relative h-[360px] overflow-hidden rounded-[1.75rem] border border-[#30315b] bg-[#11142f] shadow-2xl shadow-[#24245d]/20">
+    <div data-nav-theme="dark" className={`code-window relative overflow-hidden rounded-[1.75rem] border border-[#30315b] bg-[#11142f] shadow-2xl shadow-[#24245d]/20 ${className}`}>
       <div className="flex items-center gap-2 border-b border-white/10 bg-[#191b3d] px-5 py-4">
         <span className="size-3 rounded-full bg-[#ff5f57]" />
         <span className="size-3 rounded-full bg-[#febc2e]" />
         <span className="size-3 rounded-full bg-[#28c840]" />
-        <span className="ml-3 font-mono text-[11px] text-white/35">fsudolab / studio.ts</span>
+        <span className="ml-3 font-mono text-[11px] text-white/35">{label}</span>
       </div>
       <div className="h-[calc(100%-58px)] overflow-hidden p-6 font-mono text-sm leading-8 sm:p-8 sm:text-[15px]">
         <div className="mb-5 flex items-center gap-2 text-white/30"><span>01</span><span className="h-px w-8 bg-[#c13ad1]/70" /><span>building in public</span></div>
@@ -56,6 +71,7 @@ export function CodeWindow() {
         </div>
       </div>
       <div className="absolute -bottom-16 -right-16 size-48 rounded-full bg-[#b52ed0]/25 blur-3xl" />
+      {children}
     </div>
   )
 }
